@@ -3,7 +3,7 @@ jobs:
   lint:
     resource_class: small
     docker:
-      - image: circleci/golang:1.11.13
+      - image: circleci/golang:1.13.5
     parallelism: 1
     steps:
       - checkout
