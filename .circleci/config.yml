@@ -7,12 +7,6 @@ jobs:
     parallelism: 1
     steps:
       - checkout
-      - run:
-          name: make effxhq directory
-          command: mkdir -p /go/src/github.com/effxhq
-      - run:
-          name: clone backeffx
-          command: git -C /go/src/github.com/effxhq clone git@github.com:effxhq/backeffx.git
       - restore_cache:
           keys:
             - go-mod-v4-{{ checksum "go.sum" }}
