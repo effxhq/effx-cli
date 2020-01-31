@@ -1,0 +1,27 @@
+version: 2.1
+jobs:
+  lint:
+    resource_class: small
+    docker:
+      - image: circleci/golang:1.13.5
+    parallelism: 1
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-v4-{{ checksum "go.sum" }}
+      - run:
+          name: Go mod download
+          command: go mod download
+      - save_cache:
+          key: go-mod-v4-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: lint
+          command: go run github.com/golangci/golangci-lint/cmd/golangci-lint run -c ./.golangci.yml -E gochecknoinits -E gocyclo -E gosec -E interfacer -E maligned -E misspell -E nakedret -E unconvert -E unparam
+workflows:
+  version: 2
+  build-workflow:
+    jobs:
+      - lint
