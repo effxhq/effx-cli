@@ -21,8 +21,8 @@ var (
 
 var SyncCmd = &cobra.Command{
 	Use:   "sync",
-	Short: "sync effx.yaml to effx api",
-	Long:  `sync effx.yaml to effx api`,
+	Short: "sync effx.yaml file(s) to the effx api",
+	Long:  `sync effx.yaml file(s) to the effx api`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if apiKeyString == "" {
 			log.Fatal("api key is required")
@@ -60,9 +60,9 @@ var SyncCmd = &cobra.Command{
 }
 
 func Initialize() {
-	SyncCmd.PersistentFlags().StringVarP(&apiKeyString, "api_key", "k", "", "api_key")
-	SyncCmd.PersistentFlags().StringVarP(&filePathString, "file_path", "f", "", "file_path")
-	SyncCmd.PersistentFlags().StringVarP(&directoryString, "directory", "d", "", "directory")
+	SyncCmd.PersistentFlags().StringVarP(&apiKeyString, "key", "k", "", "your effx api key")
+	SyncCmd.PersistentFlags().StringVarP(&filePathString, "file", "f", "", "path to a effx.yaml file")
+	SyncCmd.PersistentFlags().StringVarP(&directoryString, "dir", "d", "", "directory to recursively find and sync effx.yaml files")
 }
 
 func isEffxYaml(filePath string) (bool, error) {
