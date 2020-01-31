@@ -31,7 +31,9 @@ func (h *httpClient) Synchronize(object *data.Data) error {
 	}
 
 	if object.Service != nil {
-		h.synchronizeService(object)
+		if err := h.synchronizeService(object); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -49,9 +51,17 @@ func (h *httpClient) synchronizeService(object *data.Data) error {
 	}
 
 	jsonPayload = new(bytes.Buffer)
-	json.NewEncoder(jsonPayload).Encode(object.Service)
+
+	if err := json.NewEncoder(jsonPayload).Encode(object.Service); err != nil {
+		return err
+	}
 
 	req, err = http.NewRequest(serviceIngestHost, "application/json", jsonPayload)
+
+	if err != nil {
+		return err
+	}
+
 	req.Header.Set("X-Effx-Api-Key", h.apiKey)
 
 	client := &http.Client{}

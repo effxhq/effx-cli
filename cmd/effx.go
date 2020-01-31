@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/effxhq/effx-go/cmd/sync"
 	"github.com/spf13/cobra"
 )
 
@@ -15,6 +16,11 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("hello world")
 	},
+}
+
+func Initialize() {
+	sync.Initialize()
+	rootCmd.AddCommand(sync.SyncCmd)
 }
 
 func Execute() {
