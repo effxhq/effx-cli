@@ -13,11 +13,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const effxApiKeyName = "EFFX_API_KEY"
+
 var (
 	apiKeyString    string
 	directoryString string
 	filePathString  string
 )
+
+func Initialize() {
+	SyncCmd.PersistentFlags().StringVarP(&apiKeyString, "key", "k", "", "your effx api key. alternatively, you can use env var EFFX_API_KEY")
+	SyncCmd.PersistentFlags().StringVarP(&filePathString, "file", "f", "", "path to a effx.yaml file")
+	SyncCmd.PersistentFlags().StringVarP(&directoryString, "dir", "d", "", "directory to recursively find and sync effx.yaml files")
+}
 
 var SyncCmd = &cobra.Command{
 	Use:   "sync",
@@ -25,7 +33,9 @@ var SyncCmd = &cobra.Command{
 	Long:  `sync effx.yaml file(s) to the effx api`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if apiKeyString == "" {
-			log.Fatal("api key is required")
+			if apiKeyString = os.Getenv(effxApiKeyName); apiKeyString == "" {
+				log.Fatal("api key is required")
+			}
 		}
 
 		if filePathString == "" && directoryString == "" {
@@ -57,12 +67,6 @@ var SyncCmd = &cobra.Command{
 
 		}
 	},
-}
-
-func Initialize() {
-	SyncCmd.PersistentFlags().StringVarP(&apiKeyString, "key", "k", "", "your effx api key")
-	SyncCmd.PersistentFlags().StringVarP(&filePathString, "file", "f", "", "path to a effx.yaml file")
-	SyncCmd.PersistentFlags().StringVarP(&directoryString, "dir", "d", "", "directory to recursively find and sync effx.yaml files")
 }
 
 func isEffxYaml(filePath string) (bool, error) {
