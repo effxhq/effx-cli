@@ -56,13 +56,14 @@ func (h *httpClient) synchronizeService(object *data.Data) error {
 		return err
 	}
 
-	req, err = http.NewRequest(serviceIngestHost, "application/json", jsonPayload)
+	req, err = http.NewRequest("POST", serviceIngestHost, jsonPayload)
 
 	if err != nil {
 		return err
 	}
 
-	req.Header.Set("X-Effx-Api-Key", h.apiKey)
+	req.Header.Add("Content-type", "application/json")
+	req.Header.Add("X-Effx-Api-Key", h.apiKey)
 
 	client := &http.Client{}
 
