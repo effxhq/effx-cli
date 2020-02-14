@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 
 	"github.com/effxhq/effx-go/data"
@@ -11,7 +12,10 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
-const serviceIngestHost = "https://ingest.effx.io/v1/service"
+const (
+	serviceIngestHost = "https://ingest.effx.io/v1/service"
+	tapIngestHost     = "https://ingest.effx.io/v1/events"
+)
 
 type httpClient struct {
 	apiKey   string
@@ -30,6 +34,12 @@ func (h *httpClient) Synchronize(object *data.Data) error {
 		return err
 	}
 
+	if object.Tap != nil {
+		if err := h.synchronizeTap(object); err != nil {
+			return err
+		}
+	}
+
 	if object.Service != nil {
 		if err := h.synchronizeService(object); err != nil {
 			return err
@@ -39,11 +49,27 @@ func (h *httpClient) Synchronize(object *data.Data) error {
 	return nil
 }
 
+func (h *httpClient) synchronizeTap(object *data.Data) error {
+	var (
+		jsonPayload *bytes.Buffer
+	)
+
+	if object.Tap == nil {
+		return errors.New("tap key is not found")
+	}
+
+	jsonPayload = new(bytes.Buffer)
+
+	if err := json.NewEncoder(jsonPayload).Encode(object.Tap); err != nil {
+		return err
+	}
+
+	return h.makeEffxRequest(tapIngestHost, jsonPayload)
+}
+
 func (h *httpClient) synchronizeService(object *data.Data) error {
 	var (
 		jsonPayload *bytes.Buffer
-		err         error
-		req         *http.Request
 	)
 
 	if object.Service == nil {
@@ -56,7 +82,11 @@ func (h *httpClient) synchronizeService(object *data.Data) error {
 		return err
 	}
 
-	req, err = http.NewRequest("POST", serviceIngestHost, jsonPayload)
+	return h.makeEffxRequest(serviceIngestHost, jsonPayload)
+}
+
+func (h *httpClient) makeEffxRequest(url string, jsonPayload io.Reader) error {
+	req, err := http.NewRequest("POST", url, jsonPayload)
 
 	if err != nil {
 		return err
