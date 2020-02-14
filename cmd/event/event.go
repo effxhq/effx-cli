@@ -68,7 +68,7 @@ var EventCreateCmd = &cobra.Command{
 		}
 
 		if hashtagsString != "" {
-			hashtagsStringNoSpace := strings.Join(strings.Fields(tagsString), "")
+			hashtagsStringNoSpace := strings.Join(strings.Fields(hashtagsString), "")
 			hashtags = strings.Split(hashtagsStringNoSpace, ",")
 		}
 
