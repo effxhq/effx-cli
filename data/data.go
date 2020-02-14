@@ -34,6 +34,7 @@ type Service struct {
 	Email          *Link      `json:"email"`
 	Runbook        *Link      `json:"runbook"`
 	VersionControl *Link      `json:"version_control" yaml:"version_control"`
+	OnCall         *Link      `json:"on_call" yaml:"on_call"`
 }
 
 type Tap struct {
