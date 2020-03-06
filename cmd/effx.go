@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -15,7 +14,7 @@ var rootCmd = &cobra.Command{
 	Short: "effx cli client",
 	Long:  `effx cli client`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("hello world")
+		log.Println("this is the effx cli")
 	},
 }
 

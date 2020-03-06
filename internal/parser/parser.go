@@ -1,20 +1,32 @@
 package parser
 
 import (
+	"bytes"
 	"io/ioutil"
 
+	"github.com/Velocidex/yaml"
 	"github.com/effxhq/effx-go/data"
-	"gopkg.in/yaml.v2"
 )
 
-func YamlFile(filePath string) (*data.Data, error) {
-	res := &data.Data{}
+func YamlFile(filePath string) ([]*data.Data, error) {
+	res := []*data.Data{}
 
 	if yamlFile, err := ioutil.ReadFile(filePath); err != nil {
 		return res, err
 	} else {
-		if err := yaml.Unmarshal(yamlFile, res); err != nil {
-			return res, err
+		r := bytes.NewReader(yamlFile)
+		dec := yaml.NewDecoder(r)
+
+		for {
+			d := &data.Data{}
+
+			decoded := dec.Decode(d)
+
+			if decoded != nil {
+				break
+			}
+
+			res = append(res, d)
 		}
 	}
 

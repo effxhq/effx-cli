@@ -1,14 +1,14 @@
 package event
 
 import (
+	"context"
 	"log"
 	"os"
 	"strings"
 	"time"
 
+	effx_api "github.com/effxhq/effx-api/generated/go"
 	"github.com/effxhq/effx-go/data"
-	"github.com/effxhq/effx-go/internal/client/http"
-	"github.com/effxhq/effx-go/internal/validator"
 	"github.com/spf13/cobra"
 )
 
@@ -49,7 +49,7 @@ var EventCreateCmd = &cobra.Command{
 			}
 		}
 
-		tags := []*data.Tag{}
+		tags := []effx_api.TagPayload{}
 		hashtags := []string{}
 
 		if tagsString != "" {
@@ -60,7 +60,7 @@ var EventCreateCmd = &cobra.Command{
 				splitTagString := strings.Split(splitTag, ":")
 
 				if len(splitTagString) == 2 {
-					tags = append(tags, &data.Tag{Key: splitTagString[0], Value: splitTagString[1]})
+					tags = append(tags, effx_api.TagPayload{Key: splitTagString[0], Value: splitTagString[1]})
 				} else {
 					log.Fatalf("found invalid tag: %s", splitTag)
 				}
@@ -72,36 +72,42 @@ var EventCreateCmd = &cobra.Command{
 			hashtags = strings.Split(hashtagsStringNoSpace, ",")
 		}
 
-		c := http.New(apiKeyString)
-
 		object := &data.Data{
-			Tap: &data.Tap{
+			Event: &effx_api.EventPayload{
 				ProducedAtTimeMilliseconds: time.Now().UnixNano() / 1e6,
 				Name:                       nameString,
 				Description:                descriptionString,
 				Tags:                       tags,
 				Hashtags:                   hashtags,
-				Integration: &data.Integration{
+				Integration: &effx_api.IntegrationPayload{
 					Name:    integrationNameString,
 					Version: integrationVersionString,
 				},
-				Service: &data.Service{
+				Service: &effx_api.EventServicePayload{
 					Name: serviceNameString,
 				},
 			},
 		}
 
 		if userEmailString != "" {
-			object.Tap.User = &data.User{
+			object.Event.User = &effx_api.EventUserPayload{
 				Email: userEmailString,
 			}
 		}
+		client := effx_api.NewAPIClient(effx_api.NewConfiguration())
 
-		if err := validator.ValidateObject(object); err != nil {
-			log.Fatal(err.Error())
-		}
+		resp, err := client.DefaultApi.EventsPut(
+			context.Background(),
+			apiKeyString,
+			*object.Event,
+			&effx_api.EventsPutOpts{
+				// XEffxValidateOnly: optional.NewString("false"),
+			},
+		)
 
-		if err := c.Synchronize(object); err != nil {
+		log.Println(resp)
+
+		if err != nil {
 			log.Fatal(err.Error())
 		}
 	},

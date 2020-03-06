@@ -5,6 +5,10 @@ jobs:
     docker:
       - image: circleci/golang:1.13.5
     parallelism: 1
+    environment:
+      GOPRIVATE: github.com/effxhq
+      GONOPROXY: github.com/effxhq
+      GONOSUMDB: github.com/effxhq
     steps:
       - checkout
       - restore_cache:
