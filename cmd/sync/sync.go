@@ -19,12 +19,14 @@ var (
 	apiKeyString    string
 	directoryString string
 	filePathString  string
+	isDryRun        bool
 )
 
 func Initialize() {
 	SyncCmd.PersistentFlags().StringVarP(&apiKeyString, "key", "k", "", "your effx api key. alternatively, you can use env var EFFX_API_KEY")
 	SyncCmd.PersistentFlags().StringVarP(&filePathString, "file", "f", "", "path to a effx.yaml file")
 	SyncCmd.PersistentFlags().StringVarP(&directoryString, "dir", "d", "", "directory to recursively find and sync effx.yaml files")
+	SyncCmd.PersistentFlags().BoolVarP(&isDryRun, "dry-run", "", false, "validate file(s)")
 }
 
 var SyncCmd = &cobra.Command{
@@ -32,7 +34,7 @@ var SyncCmd = &cobra.Command{
 	Short: "sync effx.yaml file(s) to the effx api",
 	Long:  `sync effx.yaml file(s) to the effx api`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if apiKeyString == "" {
+		if apiKeyString == "" && !isDryRun {
 			if apiKeyString = os.Getenv(effxApiKeyName); apiKeyString == "" {
 				log.Fatal("api key is required")
 			}
@@ -83,6 +85,7 @@ func processFile(filePath string, c client.Client) error {
 	}
 
 	if ok {
+		log.Printf("parsing %s", filePath)
 		object, err := parser.YamlFile(filePath)
 
 		if err != nil {
@@ -93,9 +96,13 @@ func processFile(filePath string, c client.Client) error {
 			return err
 		}
 
-		log.Printf("sending %s to effx api", filePath)
+		if isDryRun {
+			log.Printf("%s is valid", filePath)
+		} else {
+			log.Printf("sending %s to effx api", filePath)
 
-		return c.Synchronize(object)
+			return c.Synchronize(object)
+		}
 	}
 
 	return nil
