@@ -2,11 +2,13 @@ package event
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"strings"
 	"time"
 
+	"github.com/antihax/optional"
 	effx_api "github.com/effxhq/effx-api/generated/go"
 	"github.com/effxhq/effx-go/data"
 	"github.com/spf13/cobra"
@@ -21,6 +23,7 @@ var (
 	serviceNameString        string
 	integrationNameString    string
 	integrationVersionString string
+	isDryRun                 bool
 	userEmailString          string
 	tagsString               string
 	hashtagsString           string
@@ -36,6 +39,7 @@ func Initialize() {
 	EventCreateCmd.PersistentFlags().StringVarP(&integrationVersionString, "integration_version", "", "", "version of integration")
 	EventCreateCmd.PersistentFlags().StringVarP(&tagsString, "tags", "t", "", "tags in the format of k:v . use commas to separate tags")
 	EventCreateCmd.PersistentFlags().StringVarP(&hashtagsString, "hashtags", "", "", "hashtags. use commas to separate hashtags")
+	EventCreateCmd.PersistentFlags().BoolVarP(&isDryRun, "dry-run", "", false, "validate file(s)")
 }
 
 var EventCreateCmd = &cobra.Command{
@@ -96,16 +100,14 @@ var EventCreateCmd = &cobra.Command{
 		}
 		client := effx_api.NewAPIClient(effx_api.NewConfiguration())
 
-		resp, err := client.DefaultApi.EventsPut(
+		_, err := client.EventsApi.EventsPut(
 			context.Background(),
 			apiKeyString,
 			*object.Event,
 			&effx_api.EventsPutOpts{
-				// XEffxValidateOnly: optional.NewString("false"),
+				XEffxValidateOnly: optional.NewString(fmt.Sprintf("%v", isDryRun)),
 			},
 		)
-
-		log.Println(resp)
 
 		if err != nil {
 			log.Fatal(err.Error())

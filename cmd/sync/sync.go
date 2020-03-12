@@ -97,7 +97,7 @@ func processFile(filePath string) error {
 
 		for _, obj := range objects {
 			if obj.Service != nil {
-				resp, err := client.DefaultApi.ServicesPut(
+				_, err := client.ServicesApi.ServicesPut(
 					context.Background(),
 					apiKeyString,
 					*obj.Service,
@@ -106,9 +106,31 @@ func processFile(filePath string) error {
 					},
 				)
 
-				log.Println(resp)
+				return err
+			} else if obj.User != nil {
+				_, err := client.UsersApi.UsersPut(
+					context.Background(),
+					apiKeyString,
+					*obj.User,
+					&effx_api.UsersPutOpts{
+						XEffxValidateOnly: optional.NewString(fmt.Sprintf("%v", isDryRun)),
+					},
+				)
 
 				return err
+			} else if obj.Team != nil {
+				_, err := client.TeamsApi.TeamsPut(
+					context.Background(),
+					apiKeyString,
+					*obj.Team,
+					&effx_api.TeamsPutOpts{
+						XEffxValidateOnly: optional.NewString(fmt.Sprintf("%v", isDryRun)),
+					},
+				)
+
+				return err
+			} else {
+				return fmt.Errorf("unsupported object type found, %v", obj)
 			}
 		}
 	}
