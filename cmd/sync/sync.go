@@ -1,15 +1,16 @@
 package sync
 
 import (
+	"context"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
 	"regexp"
 
-	"github.com/effxhq/effx-go/internal/client"
-	"github.com/effxhq/effx-go/internal/client/http"
+	"github.com/antihax/optional"
+	effx_api "github.com/effxhq/effx-api/generated/go"
 	"github.com/effxhq/effx-go/internal/parser"
-	"github.com/effxhq/effx-go/internal/validator"
 	"github.com/spf13/cobra"
 )
 
@@ -48,14 +49,12 @@ var SyncCmd = &cobra.Command{
 			log.Fatal("-f <file_path> and -d <directory> cannot be used together")
 		}
 
-		c := http.New(apiKeyString)
-
 		if filePathString != "" {
 			if matched, err := isEffxYaml(filePathString); err != nil {
 				log.Fatalf("unexpected error: %v", err)
 			} else {
 				if matched {
-					if err := processFile(filePathString, c); err != nil {
+					if err := processFile(filePathString); err != nil {
 						log.Fatalf("error: %v", err)
 					}
 				} else {
@@ -63,7 +62,7 @@ var SyncCmd = &cobra.Command{
 				}
 			}
 		} else {
-			if err := processDirectory(directoryString, c); err != nil {
+			if err := processDirectory(directoryString); err != nil {
 				log.Fatalf("error: %v", err)
 			}
 
@@ -77,7 +76,7 @@ func isEffxYaml(filePath string) (bool, error) {
 	return matched, err
 }
 
-func processFile(filePath string, c client.Client) error {
+func processFile(filePath string) error {
 	ok, err := isEffxYaml(filePath)
 
 	if err != nil {
@@ -86,35 +85,66 @@ func processFile(filePath string, c client.Client) error {
 
 	if ok {
 		log.Printf("parsing %s", filePath)
-		object, err := parser.YamlFile(filePath)
+		objects, err := parser.YamlFile(filePath)
 
 		if err != nil {
 			return err
 		}
 
-		if err := validator.ValidateObject(object); err != nil {
-			return err
-		}
+		log.Printf("sending %s to effx api", filePath)
 
-		if isDryRun {
-			log.Printf("%s is valid", filePath)
-		} else {
-			log.Printf("sending %s to effx api", filePath)
+		client := effx_api.NewAPIClient(effx_api.NewConfiguration())
 
-			return c.Synchronize(object)
+		for _, obj := range objects {
+			if obj.Service != nil {
+				_, err := client.ServicesApi.ServicesPut(
+					context.Background(),
+					apiKeyString,
+					*obj.Service,
+					&effx_api.ServicesPutOpts{
+						XEffxValidateOnly: optional.NewString(fmt.Sprintf("%v", isDryRun)),
+					},
+				)
+
+				return err
+			} else if obj.User != nil {
+				_, err := client.UsersApi.UsersPut(
+					context.Background(),
+					apiKeyString,
+					*obj.User,
+					&effx_api.UsersPutOpts{
+						XEffxValidateOnly: optional.NewString(fmt.Sprintf("%v", isDryRun)),
+					},
+				)
+
+				return err
+			} else if obj.Team != nil {
+				_, err := client.TeamsApi.TeamsPut(
+					context.Background(),
+					apiKeyString,
+					*obj.Team,
+					&effx_api.TeamsPutOpts{
+						XEffxValidateOnly: optional.NewString(fmt.Sprintf("%v", isDryRun)),
+					},
+				)
+
+				return err
+			} else {
+				return fmt.Errorf("unsupported object type found, %v", obj)
+			}
 		}
 	}
 
 	return nil
 }
 
-func processDirectory(directory string, c client.Client) error {
+func processDirectory(directory string) error {
 	err := filepath.Walk(directory, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 
-		err = processFile(path, c)
+		err = processFile(path)
 
 		if err != nil {
 			return err

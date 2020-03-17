@@ -1,14 +1,16 @@
 package event
 
 import (
+	"context"
+	"fmt"
 	"log"
 	"os"
 	"strings"
 	"time"
 
+	"github.com/antihax/optional"
+	effx_api "github.com/effxhq/effx-api/generated/go"
 	"github.com/effxhq/effx-go/data"
-	"github.com/effxhq/effx-go/internal/client/http"
-	"github.com/effxhq/effx-go/internal/validator"
 	"github.com/spf13/cobra"
 )
 
@@ -21,6 +23,7 @@ var (
 	serviceNameString        string
 	integrationNameString    string
 	integrationVersionString string
+	isDryRun                 bool
 	userEmailString          string
 	tagsString               string
 	hashtagsString           string
@@ -36,6 +39,7 @@ func Initialize() {
 	EventCreateCmd.PersistentFlags().StringVarP(&integrationVersionString, "integration_version", "", "", "version of integration")
 	EventCreateCmd.PersistentFlags().StringVarP(&tagsString, "tags", "t", "", "tags in the format of k:v . use commas to separate tags")
 	EventCreateCmd.PersistentFlags().StringVarP(&hashtagsString, "hashtags", "", "", "hashtags. use commas to separate hashtags")
+	EventCreateCmd.PersistentFlags().BoolVarP(&isDryRun, "dry-run", "", false, "validate file(s)")
 }
 
 var EventCreateCmd = &cobra.Command{
@@ -49,7 +53,7 @@ var EventCreateCmd = &cobra.Command{
 			}
 		}
 
-		tags := []*data.Tag{}
+		tags := []effx_api.TagPayload{}
 		hashtags := []string{}
 
 		if tagsString != "" {
@@ -60,7 +64,7 @@ var EventCreateCmd = &cobra.Command{
 				splitTagString := strings.Split(splitTag, ":")
 
 				if len(splitTagString) == 2 {
-					tags = append(tags, &data.Tag{Key: splitTagString[0], Value: splitTagString[1]})
+					tags = append(tags, effx_api.TagPayload{Key: splitTagString[0], Value: splitTagString[1]})
 				} else {
 					log.Fatalf("found invalid tag: %s", splitTag)
 				}
@@ -72,36 +76,40 @@ var EventCreateCmd = &cobra.Command{
 			hashtags = strings.Split(hashtagsStringNoSpace, ",")
 		}
 
-		c := http.New(apiKeyString)
-
 		object := &data.Data{
-			Tap: &data.Tap{
+			Event: &effx_api.EventPayload{
 				ProducedAtTimeMilliseconds: time.Now().UnixNano() / 1e6,
 				Name:                       nameString,
 				Description:                descriptionString,
 				Tags:                       tags,
 				Hashtags:                   hashtags,
-				Integration: &data.Integration{
+				Integration: &effx_api.IntegrationPayload{
 					Name:    integrationNameString,
 					Version: integrationVersionString,
 				},
-				Service: &data.Service{
+				Service: &effx_api.EventServicePayload{
 					Name: serviceNameString,
 				},
 			},
 		}
 
 		if userEmailString != "" {
-			object.Tap.User = &data.User{
+			object.Event.User = &effx_api.EventUserPayload{
 				Email: userEmailString,
 			}
 		}
+		client := effx_api.NewAPIClient(effx_api.NewConfiguration())
 
-		if err := validator.ValidateObject(object); err != nil {
-			log.Fatal(err.Error())
-		}
+		_, err := client.EventsApi.EventsPut(
+			context.Background(),
+			apiKeyString,
+			*object.Event,
+			&effx_api.EventsPutOpts{
+				XEffxValidateOnly: optional.NewString(fmt.Sprintf("%v", isDryRun)),
+			},
+		)
 
-		if err := c.Synchronize(object); err != nil {
+		if err != nil {
 			log.Fatal(err.Error())
 		}
 	},
