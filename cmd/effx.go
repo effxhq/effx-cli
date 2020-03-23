@@ -4,8 +4,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/effxhq/effx-go/cmd/event"
-	"github.com/effxhq/effx-go/cmd/sync"
+	"github.com/effxhq/effx-cli/cmd/event"
+	"github.com/effxhq/effx-cli/cmd/sync"
 	"github.com/spf13/cobra"
 )
 

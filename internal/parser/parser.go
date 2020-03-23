@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 
 	"github.com/Velocidex/yaml"
-	"github.com/effxhq/effx-go/data"
+	"github.com/effxhq/effx-cli/data"
 )
 
 func YamlFile(filePath string) ([]*data.Data, error) {
