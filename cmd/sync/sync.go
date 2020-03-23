@@ -10,7 +10,7 @@ import (
 
 	"github.com/antihax/optional"
 	effx_api "github.com/effxhq/effx-api/generated/go"
-	"github.com/effxhq/effx-go/internal/parser"
+	"github.com/effxhq/effx-cli/internal/parser"
 	"github.com/spf13/cobra"
 )
 
