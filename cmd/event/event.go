@@ -106,6 +106,7 @@ var EventCreateCmd = &cobra.Command{
 			},
 		)
 
+		log.Printf("error %s", string(err.(effx_api.GenericSwaggerError).Body()))
 		if err != nil {
 			log.Fatal(err.Error())
 		}

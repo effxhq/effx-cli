@@ -35,7 +35,7 @@ var SyncCmd = &cobra.Command{
 	Short: "sync effx.yaml file(s) to the effx api",
 	Long:  `sync effx.yaml file(s) to the effx api`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if apiKeyString == "" && !isDryRun {
+		if apiKeyString == "" {
 			if apiKeyString = os.Getenv(effxApiKeyName); apiKeyString == "" {
 				log.Fatal("api key is required")
 			}
@@ -106,6 +106,7 @@ func processFile(filePath string) error {
 					},
 				)
 
+				log.Printf("error %s", string(err.(effx_api.GenericSwaggerError).Body()))
 				return err
 			} else if obj.User != nil {
 				_, err := client.UsersApi.UsersPut(
@@ -117,6 +118,7 @@ func processFile(filePath string) error {
 					},
 				)
 
+				log.Printf("error %s", string(err.(effx_api.GenericSwaggerError).Body()))
 				return err
 			} else if obj.Team != nil {
 				_, err := client.TeamsApi.TeamsPut(
@@ -128,6 +130,7 @@ func processFile(filePath string) error {
 					},
 				)
 
+				log.Printf("error %s", string(err.(effx_api.GenericSwaggerError).Body()))
 				return err
 			} else {
 				return fmt.Errorf("unsupported object type found, %v", obj)
