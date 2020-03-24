@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/effxhq/effx-go/cmd"
+	"github.com/effxhq/effx-cli/cmd"
 )
 
 func main() {
