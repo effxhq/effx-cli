@@ -31,17 +31,18 @@
     # a link to the on call escalation policy for this service
     on_call:
       name: "pagerduty escalation"
-      url: "https://mobscore.pagerduty.com/escalation_policies#PJ6493U"
+      url: "https://effx.pagerduty.com/escalation_policies#PJ6493U"
+
     # other various links, all links can have a name, image_url, and url
     # runbook:
     #   name: notion
-    #   url: "https://notion.so/mobscore/runbook/drwho2"
+    #   url: "https://notion.so/effx/runbook/effx-app"
     # version_control:
     #   name: github
-    #   url: "https://github.com/mobscorehq/backmobscore/services/drwho"
+    #   url: "https://github.com/effx/backend/services/effx-app"
     # documentation:
     #   name: notion
-    #   url: "https://notion.so/mobscore/documentation/drwho2"
+    #   url: "https://notion.so/effx/documentation/effx-app"
     # chat:
     #   name: "#backend"
     #   url: "https://app.slack.com/client/TF7AWQD29/CF74ZG09G"
