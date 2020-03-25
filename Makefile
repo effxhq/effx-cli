@@ -9,7 +9,7 @@ docker/registry/login:
 	@docker login
 
 docker/build:
-	@docker build -t ${IMG} .
+	@docker build -t ${IMG} . --build-arg GITHUB_TOKEN=${GITHUB_PERSONAL_TOKEN} --build-arg GITHUB_USER=${GITHUB_USER}
 	@docker tag ${IMG} ${LATEST}
 
 docker/image/tag:
