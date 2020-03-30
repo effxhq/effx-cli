@@ -1,7 +1,7 @@
 ORG		 := effx
 APP    := effx-cli
 NAME   := ${ORG}/${APP}
-TAG    := $$(git tag --points-at HEAD)
+TAG    := $$(git rev-parse --short HEAD)
 IMG    := ${NAME}:${TAG}
 LATEST := ${NAME}:latest
 
