@@ -57,7 +57,7 @@ effx-publish-deploy-event:
       --desc="$CI_PROJECT_TITLE was deployed by $GITLAB_USER_EMAIL" \
       --service=$CI_PROJECT_TITLE \
       --integration_name=gitlab \
-      --version=1
+      --integration_version=1
   only:
   - master
 ```
