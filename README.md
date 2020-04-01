@@ -55,7 +55,9 @@ effx-publish-deploy-event:
     docker run -e EFFX_API_KEY effx/effx-cli event create \
       --name="$CI_PROJECT_TITLE deployed" \
       --desc="$CI_PROJECT_TITLE was deployed by $GITLAB_USER_EMAIL" \
-      --service=$CI_PROJECT_TITLE
+      --service=$CI_PROJECT_TITLE \
+      --integration_name=gitlab \
+      --version=1
   only:
   - master
 ```
