@@ -11,21 +11,22 @@ import (
 	"github.com/antihax/optional"
 	effx_api "github.com/effxhq/effx-api/generated/go"
 	"github.com/effxhq/effx-cli/data"
-	"github.com/effxhq/effx-cli/internal/version"
 	"github.com/spf13/cobra"
 )
 
 const effxApiKeyName = "EFFX_API_KEY"
 
 var (
-	apiKeyString      string
-	nameString        string
-	descriptionString string
-	serviceNameString string
-	isDryRun          bool
-	userEmailString   string
-	tagsString        string
-	hashtagsString    string
+	apiKeyString             string
+	nameString               string
+	descriptionString        string
+	serviceNameString        string
+	integrationNameString    string
+	integrationVersionString string
+	isDryRun                 bool
+	userEmailString          string
+	tagsString               string
+	hashtagsString           string
 )
 
 func Initialize() {
@@ -34,6 +35,8 @@ func Initialize() {
 	EventCreateCmd.PersistentFlags().StringVarP(&descriptionString, "desc", "", "", "name of your event")
 	EventCreateCmd.PersistentFlags().StringVarP(&serviceNameString, "service", "", "", "name of service")
 	EventCreateCmd.PersistentFlags().StringVarP(&userEmailString, "user", "", "", "email for current user")
+	EventCreateCmd.PersistentFlags().StringVarP(&integrationNameString, "integration_name", "", "", "name of integration")
+	EventCreateCmd.PersistentFlags().StringVarP(&integrationVersionString, "integration_version", "", "", "version of integration")
 	EventCreateCmd.PersistentFlags().StringVarP(&tagsString, "tags", "t", "", "tags in the format of k:v . use commas to separate tags")
 	EventCreateCmd.PersistentFlags().StringVarP(&hashtagsString, "hashtags", "", "", "hashtags. use commas to separate hashtags")
 	EventCreateCmd.PersistentFlags().BoolVarP(&isDryRun, "dry-run", "", false, "validate file(s)")
@@ -81,8 +84,8 @@ var EventCreateCmd = &cobra.Command{
 				Tags:                       tags,
 				Hashtags:                   hashtags,
 				Integration: &effx_api.IntegrationPayload{
-					Name:    "effx-cli",
-					Version: version.Version,
+					Name:    integrationNameString,
+					Version: integrationVersionString,
 				},
 				Service: &effx_api.EventServicePayload{
 					Name: serviceNameString,
