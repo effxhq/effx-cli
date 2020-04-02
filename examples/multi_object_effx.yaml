@@ -1,0 +1,40 @@
+---
+service:
+  name: coffers
+  description: |
+    ruby microservice that is reponsible for storing credit card information for users.
+  team_owner:
+    name: payments
+  tags:
+    - key: tier
+      value: 0
+    - key: language
+      value: "ruby 2.5.7"
+  dashboards:
+    - name: datadog
+      url: "https://datadoghq.com/effx/payments/coffers/42341"
+    - name: kibana
+      url: "https://kibana.com/effx/coffers/xS123412Yt"
+  email:
+    url: payments-team@effx.com
+  on_call:
+    name: "payments escalation"
+    url: "https://effx.pagerduty.com/escalation_policies#PJ6452A"
+---
+team:
+  name: payments
+  description: |
+    provide a reliable API layer for payment processing and reporting
+  email:
+    url: payments-team@effx.com
+  chat:
+    name: "#payments"
+    url: "https://app.slack.com/client/TF7AWQD29/CF74ZG09G"
+  users:
+    - email: will@effx.com
+---
+user:
+  name: william li
+  description: |
+    likes ruby and coffee
+  email: will@effx.com
