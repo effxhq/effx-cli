@@ -97,7 +97,6 @@ func processFile(filePath string) error {
 
 		for _, obj := range objects {
 			if obj.Service != nil {
-
 				_, err := client.ServicesApi.ServicesPut(
 					context.Background(),
 					apiKeyString,
