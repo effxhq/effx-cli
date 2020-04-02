@@ -1,13 +1,13 @@
 ---
 user:
-  # the name of your service
+  # the name of this user
   name: william li
 
   # optional field to describe this user. description is used also for full-text search
   description: |
     likes ruby and coffee
 
-  # what is the name of the team that owns this service
+  # what is the email for this user
   email: will@effx.com
 
   # an image for the profile picture
