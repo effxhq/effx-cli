@@ -3,8 +3,8 @@ Hosted at:
 
 # Quickstart
 ### effx.yaml
-* it must be named `effx.yaml`
-* find an example [here](./examples/effx.yaml)
+* a config must end with `effx.yaml`. e.g. `*effx.yaml
+* find an example [here](./examples/service_effx.yaml)
 
 ### Github Action:
 lint action setup [instructions](https://github.com/effxhq/effx-lint-action) from the action's github repo. 
