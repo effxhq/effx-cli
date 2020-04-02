@@ -1,0 +1,14 @@
+---
+user:
+  # the name of your service
+  name: william li
+
+  # optional field to describe this user. description is used also for full-text search
+  description: |
+    likes ruby and coffee
+
+  # what is the name of the team that owns this service
+  email: will@effx.com
+
+  # an image for the profile picture
+  # image_url: https://ca.slack-edge.com/TF7AWQD29-UJ2QGAV2N-cf53de3f765c-72
