@@ -7,7 +7,8 @@ Hosted at:
 * find an example [here](./examples/effx.yaml)
 
 ### Github Action:
-Follow the setup [instructions](https://github.com/effxhq/effx-sync-action) from the action's github repo.
+lint action setup [instructions](https://github.com/effxhq/effx-lint-action) from the action's github repo. 
+sync action setup [instructions](https://github.com/effxhq/effx-sync-action) from the action's github repo.
 
 ### Gitlab CI:
 setup:
