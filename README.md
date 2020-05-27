@@ -18,10 +18,10 @@ We've created two Github Actions for making it easy to automatically lint your c
 Setup:
 1. [grab your effx api key](https://app.effx.com/account_settings)
 2. add `EFFX_API_KEY` variable with your api key in your `gitlab repo > settings > ci_cd > variables` page
-3. add the following jobs to your `.gitlab.ci.yml` file
+3. add the following jobs to your `.gitlab-ci.yml` file
 
 ```yaml
-# .gitlab.ci.yml
+# .gitlab-ci.yml
 
 # Run a linter for your effx.yaml files
 effx-lint:
