@@ -36,7 +36,7 @@ func Initialize() {
 	EventCreateCmd.PersistentFlags().StringVarP(&serviceNameString, "service", "", "", "name of service")
 	EventCreateCmd.PersistentFlags().StringVarP(&userEmailString, "user", "", "", "email for current user")
 	EventCreateCmd.PersistentFlags().StringVarP(&integrationNameString, "integration_name", "", "", "name of integration")
-	EventCreateCmd.PersistentFlags().StringVarP(&integrationVersionString, "integration_version", "", "", "version of integration")
+	EventCreateCmd.PersistentFlags().StringVarP(&integrationVersionString, "integration_version", "", "", "DEPRECATED, DO NOT USE")
 	EventCreateCmd.PersistentFlags().StringVarP(&tagsString, "tags", "t", "", "tags in the format of k:v . use commas to separate tags")
 	EventCreateCmd.PersistentFlags().StringVarP(&hashtagsString, "hashtags", "", "", "hashtags. use commas to separate hashtags")
 	EventCreateCmd.PersistentFlags().BoolVarP(&isDryRun, "dry-run", "", false, "validate file(s)")
@@ -84,8 +84,7 @@ var EventCreateCmd = &cobra.Command{
 				Tags:                       tags,
 				Hashtags:                   hashtags,
 				Integration: &effx_api.IntegrationPayload{
-					Name:    integrationNameString,
-					Version: integrationVersionString,
+					Name: integrationNameString,
 				},
 				Service: &effx_api.EventServicePayload{
 					Name: serviceNameString,

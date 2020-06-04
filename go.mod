@@ -7,7 +7,7 @@ require (
 	github.com/antihax/optional v1.0.0
 	github.com/coreos/go-etcd v2.0.0+incompatible // indirect
 	github.com/cpuguy83/go-md2man v1.0.10 // indirect
-	github.com/effxhq/effx-api v0.0.0-20200604173343-cc9e240b2cda
+	github.com/effxhq/effx-api v0.0.0-20200604184242-80bfdc3de552
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/pelletier/go-toml v1.6.0 // indirect
 	github.com/spf13/afero v1.2.2 // indirect

@@ -30,6 +30,8 @@ github.com/effxhq/effx-api v0.0.0-20200307051018-c9b0fd1df587 h1:yTCwNzP+Y7dyGj1
 github.com/effxhq/effx-api v0.0.0-20200307051018-c9b0fd1df587/go.mod h1:w51Lc8MhaZbiH7KAxx9nlMNTNzDk7X7qN2U7JTHMsgA=
 github.com/effxhq/effx-api v0.0.0-20200604173343-cc9e240b2cda h1:zxS1mIWTi//IXcQLB0aZcIPtJYZoqBIVlH9yjjFsFow=
 github.com/effxhq/effx-api v0.0.0-20200604173343-cc9e240b2cda/go.mod h1:w51Lc8MhaZbiH7KAxx9nlMNTNzDk7X7qN2U7JTHMsgA=
+github.com/effxhq/effx-api v0.0.0-20200604184242-80bfdc3de552 h1:FNbcsaYEt2DeEw8WyWTMgcOEz06d3EN5FQxjU3dMPK4=
+github.com/effxhq/effx-api v0.0.0-20200604184242-80bfdc3de552/go.mod h1:w51Lc8MhaZbiH7KAxx9nlMNTNzDk7X7qN2U7JTHMsgA=
 github.com/effxhq/effx-cli v0.2.6 h1:E4CJC9t8uT881tP9OXjgMnwIIpkGRfnsIaU4R1PxZok=
 github.com/effxhq/effx-cli v0.2.6/go.mod h1:5B16sUWxAuJ2Yz3+zFWwZ/7z+ECCqcNw+XdbERiMOWU=
 github.com/fsnotify/fsnotify v1.4.7 h1:IXs+QLmnXW2CcXuY+8Mzv/fWEsPGWxqefPtCP5CnV9I=
