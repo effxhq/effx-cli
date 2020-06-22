@@ -93,7 +93,18 @@ func processFile(filePath string) error {
 
 		log.Printf("sending %s to effx api", filePath)
 
-		client := effx_api.NewAPIClient(effx_api.NewConfiguration())
+		basePath := "https://api.effx.io/v1"
+
+		if os.Getenv("EFFX_API_HOST") != "" {
+			log.Printf("switching to use basePath %s", fmt.Sprintf("%s/v1", os.Getenv("EFFX_API_HOST")))
+			basePath = fmt.Sprintf("%s/v1", os.Getenv("EFFX_API_HOST"))
+		}
+
+		client := effx_api.NewAPIClient(&effx_api.Configuration{
+			BasePath:      basePath,
+			DefaultHeader: make(map[string]string),
+			UserAgent:     "Swagger-Codegen/1.0.0/go",
+		})
 
 		for _, obj := range objects {
 			if obj.Service != nil {
