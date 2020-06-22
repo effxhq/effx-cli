@@ -98,7 +98,19 @@ var EventCreateCmd = &cobra.Command{
 				Email: userEmailString,
 			}
 		}
-		client := effx_api.NewAPIClient(effx_api.NewConfiguration())
+
+		basePath := "https://api.effx.io/v1"
+
+		if os.Getenv("EFFX_API_HOST") != "" {
+			log.Printf("switching to use basePath %s", fmt.Sprintf("%s/v1", os.Getenv("EFFX_API_HOST")))
+			basePath = fmt.Sprintf("%s/v1", os.Getenv("EFFX_API_HOST"))
+		}
+
+		client := effx_api.NewAPIClient(&effx_api.Configuration{
+			BasePath:      basePath,
+			DefaultHeader: make(map[string]string),
+			UserAgent:     "Swagger-Codegen/1.0.0/go",
+		})
 
 		_, err := client.EventsApi.EventsPut(
 			context.Background(),
