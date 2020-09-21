@@ -1,0 +1,47 @@
+---
+kind: Service
+apiVersion: effx.io/v1
+metadata:
+  name: jwt service
+  description: grpc service for dealing with tokens
+  annotations:
+    effx.io/owned-by: authentication team
+  labels:
+    group: auth
+    tier: "1.13.5"
+    go: "1.13.5"
+spec:
+  contactInformation:
+    email: auth@effx.com
+    chat:
+      name: slack
+      url: https://effx.slack.com/archives/CJV3H8Z41
+    on_call:
+      name: pagerduty schedule
+      url: https://effxio.pagerduty.com/schedules#PJEA3VC
+  link_groups:
+    - name: dashboard
+      links:
+        - name: datadog
+          url: https://app.datadoghq.com/apm/service/trugut/grpc.server?env=prod
+    - name: runbook
+      links:
+        - name: on call runbook
+          url: https://www.notion.so/effx/general-on-call-69541dee6da64c87b70b1cc78e293cb8
+---
+kind: Team
+apiVersion: effx.io/v1
+metadata:
+  name: authentication team
+  description: reponsible for user authentication and signup
+  annotations:
+    effx.io/reports-to: engineering
+spec:
+  contactInformation:
+    email: auth@effx.com
+    chat:
+      name: "#auth"
+      url: https://effx.slack.com/archives/CJV3H8Z41
+    on_call:
+      name: escalation policy
+      url: https://effxio.pagerduty.com/schedules#PJEA3VC
