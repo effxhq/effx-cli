@@ -1,0 +1,17 @@
+---
+kind: Team
+apiVersion: effx.io/v1
+metadata:
+  name: authentication team
+  description: reponsible for user authentication and signup
+  annotations:
+    effx.io/reports-to: engineering
+spec:
+  contactInformation:
+    email: auth@effx.com
+    chat:
+      name: "#auth"
+      url: https://effx.slack.com/archives/CJV3H8Z41
+    on_call:
+      name: escalation policy
+      url: https://effxio.pagerduty.com/schedules#PJEA3VC
