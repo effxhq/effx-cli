@@ -1,3 +1,4 @@
+---
 version: 2.1
 jobs:
   lint:
@@ -24,8 +25,21 @@ jobs:
           key: go-mod-v4-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
+  release:
+    docker:
+      - image: circleci/golang:1.15
+    steps:
+      - checkout
+      - run: curl -sL https://git.io/goreleaser | bash
 workflows:
   version: 2
   build-workflow:
     jobs:
       - lint
+      - release:
+          context: effx-cli-releases
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*(-.*)*/
