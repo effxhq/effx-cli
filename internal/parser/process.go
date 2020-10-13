@@ -1,10 +1,25 @@
 package parser
 
 import (
+	"os"
 	"path/filepath"
+	"regexp"
 
 	"github.com/effxhq/effx-cli/data"
 )
+
+func glob(dir string, pattern string) ([]string, error) {
+	files := []string{}
+	err := filepath.Walk(dir, func(path string, f os.FileInfo, err error) error {
+		matched, _ := regexp.MatchString(pattern, path)
+		if matched {
+			files = append(files, path)
+		}
+		return nil
+	})
+
+	return files, err
+}
 
 func ProcessArgs(filePath string, directory string) ([]data.ApiResource, error) {
 	var resources []data.ApiResource
@@ -26,13 +41,8 @@ func ProcessFile(filePath string) ([]data.ApiResource, error) {
 }
 
 func ProcessDirectory(directory string) ([]data.ApiResource, error) {
-	pattern := "**/*.effx.yaml"
-	yaml, _ := filepath.Glob(pattern)
-
-	pattern = "**/*.effx.yml"
-	yml, _ := filepath.Glob(pattern)
-
-	matches := append(yml, yaml...)
+	pattern := EffxYaml{}.getFilePattern()
+	matches, _ := glob(directory, pattern)
 
 	var resources []data.ApiResource
 	for _, path := range matches {
