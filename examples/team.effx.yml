@@ -11,6 +11,6 @@ spec:
     chat:
       label: "#auth"
       url: https://effx.slack.com/archives/CJV3H8Z41
-    on_call:
+    onCall:
       label: escalation policy
       url: https://effxio.pagerduty.com/schedules#PJEA3VC
