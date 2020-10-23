@@ -6,7 +6,7 @@ spec:
   description: grpc service for dealing with tokens
   annotations:
     effx.io/owned-by: authentication team
-  labels:
+  tags:
     group: auth
     tier: "1.13.5"
     go: "1.13.5"
@@ -15,7 +15,7 @@ spec:
     chat:
       label: effx
       url: https://effx.slack.com/archives/CJV3H8Z41
-    on_call:
+    onCall:
       label: pagerduty schedule
       url: https://effxio.pagerduty.com/schedules#PJEA3VC
   linkGroups:
