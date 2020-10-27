@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"log"
+	"strings"
 
 	effx_api "github.com/effxhq/effx-api-v2/generated/go/client"
 	validate "github.com/effxhq/openapi3-validate"
@@ -15,9 +16,9 @@ type ApiResourceContent struct {
 }
 
 type ApiResourceMeta struct {
-	Kind       string
-	ApiVersion string
-	Metadata   struct {
+	Kind    string
+	Version string
+	Spec    struct {
 		Name string
 	}
 }
@@ -51,8 +52,8 @@ func (c ApiResourceContent) Sync(apiKey string, isPost bool) error {
 	ctx := context.WithValue(context.Background(), effx_api.ContextServerIndex, serverIndex)
 
 	meta := c.GetMeta()
-	switch meta.Kind {
-	case "Service":
+	switch strings.ToLower(meta.Kind) {
+	case "service":
 		var service effx_api.ServiceConfiguration
 		if err := json.Unmarshal(c.Content, &service); err != nil {
 			return err
@@ -64,7 +65,7 @@ func (c ApiResourceContent) Sync(apiKey string, isPost bool) error {
 		if err != nil {
 			return err
 		}
-	case "Team":
+	case "team":
 		var team effx_api.TeamConfiguration
 		if err := json.Unmarshal(c.Content, &team); err != nil {
 			return err
