@@ -19,7 +19,7 @@ type EffxYaml struct {
 }
 
 func (y EffxYaml) getFilePattern() string {
-	return `.+\.effx\.(yaml|yml)$`
+	return "(.+\\.)?effx\\.ya?ml$"
 }
 
 func (y EffxYaml) isEffxYaml() (bool, error) {
