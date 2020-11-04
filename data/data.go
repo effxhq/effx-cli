@@ -1,7 +1,7 @@
 package data
 
 import (
-	"context"
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -61,7 +61,6 @@ func (y EffxYaml) Lint() error {
 		return nil
 	}
 	body, _ := json.Marshal(config)
-	log.Printf("%+v", string(body))
 
 	url := generateUrl()
 	url.Path = "v2/config/lint"
