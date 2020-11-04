@@ -49,7 +49,7 @@ func (y EffxYaml) newConfig() (*effx_api.ConfigurationFile, error) {
 func (y EffxYaml) Lint() error {
 	log.Printf("Linting %+v\n", y.FilePath)
 
-	ok, err := y.isEffxYaml()
+	ok, _ := y.isEffxYaml()
 	if !ok {
 		pattern := y.GetFilePattern()
 		errString := fmt.Sprintf("Not an Effx Yaml. %s must match pattern: %s", y.FilePath, pattern)
@@ -108,7 +108,7 @@ func generateUrl() *url.URL {
 func logErrorMessages(response *http.Response) {
 	if response.StatusCode != 204 {
 		var result map[string]interface{}
-		json.NewDecoder(response.Body).Decode(&result)
+		_ = json.NewDecoder(response.Body).Decode(&result)
 		log.Println(result["message"])
 	}
 }
