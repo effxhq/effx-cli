@@ -19,8 +19,6 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
-
 	rootCmd.AddCommand(lint.LintCmd)
 	rootCmd.AddCommand(sync.SyncCmd)
 }

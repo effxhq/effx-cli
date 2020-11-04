@@ -21,38 +21,29 @@ func glob(dir string, pattern string) ([]string, error) {
 	return files, err
 }
 
-func ProcessArgs(filePath string, directory string) ([]data.ApiResource, error) {
-	var resources []data.ApiResource
-	var err error
+func ProcessArgs(filePath string, directory string) []data.EffxYaml {
+	var yamls []data.EffxYaml
 	if filePath != "" {
-		resources, err = ProcessFile(filePath)
+		yamls = ProcessFile(filePath)
 	} else {
-		resources, err = ProcessDirectory(directory)
+		yamls = ProcessDirectory(directory)
 	}
-	if err != nil {
-		return nil, err
-	}
-	return resources, err
+	return yamls
 }
 
-func ProcessFile(filePath string) ([]data.ApiResource, error) {
-	effxYaml := EffxYaml{FilePath: filePath}
-	return effxYaml.ToApiResources()
+func ProcessFile(filePath string) []data.EffxYaml {
+	effxYaml := data.EffxYaml{FilePath: filePath}
+	return []data.EffxYaml{effxYaml}
 }
 
-func ProcessDirectory(directory string) ([]data.ApiResource, error) {
-	pattern := EffxYaml{}.getFilePattern()
+func ProcessDirectory(directory string) []data.EffxYaml {
+	pattern := data.EffxYaml{}.GetFilePattern()
 	matches, _ := glob(directory, pattern)
 
-	var resources []data.ApiResource
+	var yamls []data.EffxYaml
 	for _, path := range matches {
-		fileResources, err := ProcessFile(path)
-		resources = append(resources, fileResources...)
-
-		if err != nil {
-			return nil, err
-		}
+		yamls = append(yamls, data.EffxYaml{FilePath: path})
 	}
 
-	return resources, nil
+	return yamls
 }
