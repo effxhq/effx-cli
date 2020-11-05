@@ -32,10 +32,7 @@ var LintCmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		resources, err := parser.ProcessArgs(filePathString, directoryString)
-		if err != nil {
-			return err
-		}
+		resources := parser.ProcessArgs(filePathString, directoryString)
 		for _, resource := range resources {
 			err := resource.Lint()
 			if err != nil {

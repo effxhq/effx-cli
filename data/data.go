@@ -1,83 +1,122 @@
 package data
 
 import (
-	"context"
+	"bytes"
 	"encoding/json"
+	"errors"
+	"fmt"
+	"io/ioutil"
 	"log"
-	"strings"
+	"net/http"
+	"net/url"
+	"os"
+	"regexp"
 
 	effx_api "github.com/effxhq/effx-api-v2/generated/go/client"
-	validate "github.com/effxhq/openapi3-validate"
 )
 
-// Store as JSON bytes
-type ApiResourceContent struct {
-	Content []byte
+const EffxApiHost = "EFFX_API_HOST"
+const EffxYamlPattern = "(.+\\.)?effx\\.ya?ml$"
+
+var EffxYamlRegex = regexp.MustCompile(EffxYamlPattern)
+
+type EffxYaml struct {
+	FilePath string
 }
 
-type ApiResourceMeta struct {
-	Kind    string
-	Version string
-	Spec    struct {
-		Name string
+func (y EffxYaml) isEffxYaml() bool {
+	matched := EffxYamlRegex.MatchString(y.FilePath)
+	return matched
+}
+
+func (y EffxYaml) newConfig() (*effx_api.ConfigurationFile, error) {
+	config := &effx_api.ConfigurationFile{}
+	yamlFile, err := ioutil.ReadFile(y.FilePath)
+	if err != nil {
+		return nil, err
 	}
+	config.FileContents = string(yamlFile)
+	config.SetAnnotations(map[string]string{
+		"effx.io/source":    "effx-cli",
+		"effx.io/file-path": y.FilePath,
+	})
+
+	return config, nil
 }
 
-type ApiResource interface {
-	GetMeta() ApiResourceMeta
-	Lint() error
-	Sync(apiKey string, isPost bool) error
-}
+func (y EffxYaml) Lint() error {
+	log.Printf("Linting %+v\n", y.FilePath)
 
-func (c ApiResourceContent) GetMeta() ApiResourceMeta {
-	var meta ApiResourceMeta
-	_ = json.Unmarshal(c.Content, &meta)
-	return meta
-}
-
-func (c ApiResourceContent) Lint() error {
-	log.Printf("Linting %+v\n", c.GetMeta())
-	return validate.ValidateComponent(c.Content)
-}
-
-func (c ApiResourceContent) Sync(apiKey string, isPost bool) error {
-	log.Printf("Syncing %+v\n", c.GetMeta())
-	cfg := effx_api.NewConfiguration()
-	client := effx_api.NewAPIClient(cfg)
-
-	serverIndex := 0
-	if isPost {
-		serverIndex = 1
+	ok := y.isEffxYaml()
+	if !ok {
+		errString := fmt.Sprintf("Not an Effx Yaml. %s must match pattern: %s", y.FilePath, EffxYamlPattern)
+		return errors.New(errString)
 	}
-	ctx := context.WithValue(context.Background(), effx_api.ContextServerIndex, serverIndex)
 
-	meta := c.GetMeta()
-	switch strings.ToLower(meta.Kind) {
-	case "service":
-		var service effx_api.ServiceConfiguration
-		if err := json.Unmarshal(c.Content, &service); err != nil {
-			return err
-		}
-		request := client.ServicesApi.ServicesPut(ctx)
-		request = request.ServiceConfiguration(service)
-		request = request.XEffxApiKey(apiKey)
-		_, err := request.Execute()
-		if err != nil {
-			return err
-		}
-	case "team":
-		var team effx_api.TeamConfiguration
-		if err := json.Unmarshal(c.Content, &team); err != nil {
-			return err
-		}
-		request := client.TeamsApi.TeamsPut(ctx)
-		request = request.TeamConfiguration(team)
-		request = request.XEffxApiKey(apiKey)
-		_, err := request.Execute()
-		if err != nil {
-			return err
-		}
+	config, err := y.newConfig()
+	if err != nil {
+		return nil
 	}
+	body, _ := json.Marshal(config)
+
+	url := generateUrl()
+	url.Path = "v2/config/lint"
+
+	resp, err := http.Post(url.String(), "application/json", bytes.NewReader(body))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	logErrorMessages(resp)
 
 	return nil
+}
+
+func (y EffxYaml) Sync(apiKey string) error {
+	log.Printf("Syncing %+v\n", y.FilePath)
+
+	config, err := y.newConfig()
+	if err != nil {
+		return nil
+	}
+	body, _ := json.Marshal(config)
+
+	url := generateUrl()
+	url.Path = "v2/config"
+
+	request, _ := http.NewRequest("PUT", url.String(), bytes.NewReader(body))
+	request.Header.Add("content-type", "application/json")
+	request.Header.Add("x-effx-api-key", apiKey)
+
+	resp, err := http.DefaultClient.Do(request)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	logErrorMessages(resp)
+
+	return nil
+}
+
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
+}
+
+func generateUrl() *url.URL {
+	url := url.URL{
+		Scheme: "https",
+		Host:   getEnv(EffxApiHost, "api.effx.io"),
+	}
+	return &url
+}
+
+func logErrorMessages(response *http.Response) {
+	if response.StatusCode != 204 {
+		var result map[string]interface{}
+		_ = json.NewDecoder(response.Body).Decode(&result)
+		log.Println(result["message"])
+	}
 }

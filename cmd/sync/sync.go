@@ -9,7 +9,6 @@ import (
 )
 
 const effxApiKeyName = "EFFX_API_KEY"
-const environment = "EFFX_API_ENV"
 
 var (
 	apiKeyString    string
@@ -44,14 +43,10 @@ var SyncCmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		resources, err := parser.ProcessArgs(filePathString, directoryString)
-		if err != nil {
-			return err
-		}
+		resources := parser.ProcessArgs(filePathString, directoryString)
 
-		isPost := os.Getenv(environment) == "post"
 		for _, resource := range resources {
-			err := resource.Sync(apiKeyString, isPost)
+			err := resource.Sync(apiKeyString)
 			if err != nil {
 				return err
 			}

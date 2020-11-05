@@ -8,7 +8,7 @@ spec:
     effx.io/owned-by: authentication team
   tags:
     group: auth
-    tier: "1.13.5"
+    tier: "1"
     go: "1.13.5"
   contact:
     email: auth@effx.com
