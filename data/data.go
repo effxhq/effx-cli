@@ -15,20 +15,18 @@ import (
 	effx_api "github.com/effxhq/effx-api-v2/generated/go/client"
 )
 
-const environment = "EFFX_API_ENV"
+const EffxApiHost = "EFFX_API_HOST"
+const EffxYamlPattern = "(.+\\.)?effx\\.ya?ml$"
+
+var EffxYamlRegex = regexp.MustCompile(EffxYamlPattern)
 
 type EffxYaml struct {
 	FilePath string
 }
 
-func (y EffxYaml) GetFilePattern() string {
-	return "(.+\\.)?effx\\.ya?ml$"
-}
-
-func (y EffxYaml) isEffxYaml() (bool, error) {
-	pattern := y.GetFilePattern()
-	matched, err := regexp.MatchString(pattern, y.FilePath)
-	return matched, err
+func (y EffxYaml) isEffxYaml() bool {
+	matched := EffxYamlRegex.MatchString(y.FilePath)
+	return matched
 }
 
 func (y EffxYaml) newConfig() (*effx_api.ConfigurationFile, error) {
@@ -49,10 +47,9 @@ func (y EffxYaml) newConfig() (*effx_api.ConfigurationFile, error) {
 func (y EffxYaml) Lint() error {
 	log.Printf("Linting %+v\n", y.FilePath)
 
-	ok, _ := y.isEffxYaml()
+	ok := y.isEffxYaml()
 	if !ok {
-		pattern := y.GetFilePattern()
-		errString := fmt.Sprintf("Not an Effx Yaml. %s must match pattern: %s", y.FilePath, pattern)
+		errString := fmt.Sprintf("Not an Effx Yaml. %s must match pattern: %s", y.FilePath, EffxYamlPattern)
 		return errors.New(errString)
 	}
 
@@ -93,13 +90,17 @@ func (y EffxYaml) Sync(apiKey string) error {
 	return err
 }
 
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
+}
+
 func generateUrl() *url.URL {
 	url := url.URL{
 		Scheme: "https",
-		Host:   "api.effx.io",
-	}
-	if os.Getenv(environment) == "post" {
-		url.Host = "post.api.effx.io"
+		Host:   getEnv(EffxApiHost, "api.effx.io"),
 	}
 	return &url
 }

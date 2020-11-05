@@ -37,8 +37,7 @@ func ProcessFile(filePath string) []data.EffxYaml {
 }
 
 func ProcessDirectory(directory string) []data.EffxYaml {
-	pattern := data.EffxYaml{}.GetFilePattern()
-	matches, _ := glob(directory, pattern)
+	matches, _ := glob(directory, data.EffxYamlPattern)
 
 	var yamls []data.EffxYaml
 	for _, path := range matches {
