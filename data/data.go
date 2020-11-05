@@ -63,9 +63,13 @@ func (y EffxYaml) Lint() error {
 	url.Path = "v2/config/lint"
 
 	resp, err := http.Post(url.String(), "application/json", bytes.NewReader(body))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
 	logErrorMessages(resp)
 
-	return err
+	return nil
 }
 
 func (y EffxYaml) Sync(apiKey string) error {
@@ -85,9 +89,13 @@ func (y EffxYaml) Sync(apiKey string) error {
 	request.Header.Add("x-effx-api-key", apiKey)
 
 	resp, err := http.DefaultClient.Do(request)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
 	logErrorMessages(resp)
 
-	return err
+	return nil
 }
 
 func getEnv(key, fallback string) string {
