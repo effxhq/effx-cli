@@ -15,17 +15,21 @@ import (
 	effx_api "github.com/effxhq/effx-api-v2/generated/go/client"
 )
 
-const EffxApiHost = "EFFX_API_HOST"
+// EffxAPIHost Is the environment variable to override the API host
+const EffxAPIHost = "EFFX_API_HOST"
+
+// EffxYamlPattern is the regex pattern for yaml files
 const EffxYamlPattern = "(.+\\.)?effx\\.ya?ml$"
 
-var EffxYamlRegex = regexp.MustCompile(EffxYamlPattern)
+var effxYamlRegex = regexp.MustCompile(EffxYamlPattern)
 
+// EffxYaml provides a data structure and methods for interacting with effx yamls
 type EffxYaml struct {
 	FilePath string
 }
 
 func (y EffxYaml) isEffxYaml() bool {
-	matched := EffxYamlRegex.MatchString(y.FilePath)
+	matched := effxYamlRegex.MatchString(y.FilePath)
 	return matched
 }
 
@@ -44,6 +48,7 @@ func (y EffxYaml) newConfig() (*effx_api.ConfigurationFile, error) {
 	return config, nil
 }
 
+// Lint Checks for syntax errors in the yaml file
 func (y EffxYaml) Lint() error {
 	log.Printf("Linting %+v\n", y.FilePath)
 
@@ -59,7 +64,7 @@ func (y EffxYaml) Lint() error {
 	}
 	body, _ := json.Marshal(config)
 
-	url := generateUrl()
+	url := generateURL()
 	url.Path = "v2/config/lint"
 
 	resp, err := http.Post(url.String(), "application/json", bytes.NewReader(body))
@@ -67,11 +72,11 @@ func (y EffxYaml) Lint() error {
 		return err
 	}
 	defer resp.Body.Close()
-	logErrorMessages(resp)
 
-	return nil
+	return checkForErrors(resp)
 }
 
+// Sync Updates the Effx API with yaml file contents
 func (y EffxYaml) Sync(apiKey string) error {
 	log.Printf("Syncing %+v\n", y.FilePath)
 
@@ -81,7 +86,7 @@ func (y EffxYaml) Sync(apiKey string) error {
 	}
 	body, _ := json.Marshal(config)
 
-	url := generateUrl()
+	url := generateURL()
 	url.Path = "v2/config"
 
 	request, _ := http.NewRequest("PUT", url.String(), bytes.NewReader(body))
@@ -93,9 +98,8 @@ func (y EffxYaml) Sync(apiKey string) error {
 		return err
 	}
 	defer resp.Body.Close()
-	logErrorMessages(resp)
 
-	return nil
+	return checkForErrors(resp)
 }
 
 func getEnv(key, fallback string) string {
@@ -105,18 +109,19 @@ func getEnv(key, fallback string) string {
 	return fallback
 }
 
-func generateUrl() *url.URL {
+func generateURL() *url.URL {
 	url := url.URL{
 		Scheme: "https",
-		Host:   getEnv(EffxApiHost, "api.effx.io"),
+		Host:   getEnv(EffxAPIHost, "api.effx.io"),
 	}
 	return &url
 }
 
-func logErrorMessages(response *http.Response) {
+func checkForErrors(response *http.Response) error {
 	if response.StatusCode != 204 {
 		var result map[string]interface{}
 		_ = json.NewDecoder(response.Body).Decode(&result)
-		log.Println(result["message"])
+		return fmt.Errorf("%s", result["message"])
 	}
+	return nil
 }
