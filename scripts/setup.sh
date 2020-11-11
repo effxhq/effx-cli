@@ -65,6 +65,10 @@ curl -X PUT "https://api.effx.io/v2/services" -H "accept: application/json" -H "
           {
             "url": "https://github.com/effxhq/.github",
             "label": "github workflows"
+          },
+          {
+            "url": "https://github.com/effxhq/vcs-connect",
+            "label": "vcs-connect"
           }
         ]
       },
