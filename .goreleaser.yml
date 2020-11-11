@@ -23,12 +23,12 @@ archives:
 blobs:
   - provider: s3
     region: us-west-2
-    bucket: effx-cli
-    folder: "releases/{{ .Version }}"
+    bucket: effx-run
+    folder: "effx-cli/releases/{{ .Version }}"
   - provider: s3
     region: us-west-2
-    bucket: effx-cli
-    folder: "releases/latest"
+    bucket: effx-run
+    folder: "effx-cli/releases/latest"
 checksum:
   name_template: 'checksums.txt'
   algorithm: md5
