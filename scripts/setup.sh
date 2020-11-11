@@ -51,6 +51,15 @@ curl -X PUT "https://api.effx.io/v2/services" -H "accept: application/json" -H "
         ]
       },
       {
+        "label": "runbook",
+        "links": [
+          {
+            "url": "https://blog.effx.com/how-to-write-a-runbook/",
+            "label": "best practices"
+          }
+        ]
+      },
+      {
         "label": "version control",
         "links": [
           {
