@@ -3,8 +3,8 @@ curl -X PUT "https://api.effx.io/v2/services" -H "accept: application/json" -H "
   "version": "effx/v1",
   "kind": "service",
   "spec": {
-    "name": "example-service2",
-    "description": "this service is used for testing stuff",
+    "name": "example-service",
+    "description": "this service contains useful links for using Effx",
     "tags": {
       "go": "1.15.4",
       "group": "example"
@@ -17,32 +17,36 @@ curl -X PUT "https://api.effx.io/v2/services" -H "accept: application/json" -H "
       "chat": {
         "label": "#community",
         "url": "https://join.slack.com/t/m11s/shared_invite/zt-j71p8afk-07MmPgrXlUd7qF_s6qXovg"
-      },
-      "onCall": {
-        "url": "https://www.pagerduty.com/platform/on-call-management/",
-        "label": "pagerduty"
       }
     },
     "linkGroups": [
       {
-        "label": "dashboards",
+        "label": "documentation",
         "links": [
           {
-            "url": "https://datadog.com",
-            "label": "datadog"
+            "url": "https://help.effx.com",
+            "label": "help"
           },
           {
-            "url": "https://newrelic.com",
-            "label": "newrelic"
+            "url": "https://effxhq.github.io/effx-api-v2/",
+            "label": "API"
+          },
+          {
+            "url": "placeholder",
+            "label": "vcs-connect"
           }
         ]
       },
       {
-        "label": "runbook",
+        "label": "dashboards",
         "links": [
           {
-            "url": "https://notion.so",
-            "label": "deploy guide"
+            "url": "https://status.effx.com",
+            "label": "status"
+          },
+          {
+            "url": "placeholder for wuher uptime & latency",
+            "label": "datadog"
           }
         ]
       },
@@ -51,7 +55,7 @@ curl -X PUT "https://api.effx.io/v2/services" -H "accept: application/json" -H "
         "links": [
           {
             "url": "https://github.com/effxhq/.github",
-            "label": "github"
+            "label": "github workflows"
           }
         ]
       },
