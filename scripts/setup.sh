@@ -1,4 +1,4 @@
-curl -X PUT "https://api.effx.io/v2/services" -H "accept: application/json" -H "X-Effx-Api-Key: $EFFX_API_KEY" -H "Content-Type: application/json" -d'
+curl -X PUT "https://post.api.effx.io/v2/services" -H "accept: application/json" -H "X-Effx-Api-Key: $EFFX_API_KEY" -H "Content-Type: application/json" -d'
 {
   "version": "effx/v1",
   "kind": "service",
@@ -45,7 +45,7 @@ curl -X PUT "https://api.effx.io/v2/services" -H "accept: application/json" -H "
             "label": "status"
           },
           {
-            "url": "placeholder for wuher uptime & latency",
+            "url": "https://p.datadoghq.com/sb/f655e3381-6bdce95d9ec6f133df05532b21b5f5dc",
             "label": "datadog"
           }
         ]
