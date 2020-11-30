@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"os"
 	"regexp"
+	"strings"
 
 	effx_api "github.com/effxhq/effx-api-v2/generated/go/client"
 )
@@ -110,18 +111,23 @@ func getEnv(key, fallback string) string {
 }
 
 func generateURL() *url.URL {
-	url := url.URL{
+	u := url.URL{
 		Scheme: "https",
 		Host:   getEnv(EffxAPIHost, "api.effx.io"),
 	}
-	return &url
+
+	if strings.HasPrefix(u.Host, "localhost") {
+		u.Scheme = "http"
+	}
+
+	return &u
 }
 
 func checkForErrors(response *http.Response) error {
 	if response.StatusCode != 204 {
 		var result map[string]interface{}
 		_ = json.NewDecoder(response.Body).Decode(&result)
-		return fmt.Errorf("%s", result["message"])
+		return fmt.Errorf("%d: %s", response.StatusCode, result)
 	}
 	return nil
 }
