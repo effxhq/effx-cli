@@ -1,4 +1,4 @@
-curl -X PUT "https://post.api.effx.io/v2/services" -H "accept: application/json" -H "X-Effx-Api-Key: $EFFX_API_KEY" -H "Content-Type: application/json" -d'
+curl -X PUT "https://api.effx.io/v2/services" -H "accept: application/json" -H "X-Effx-Api-Key: $EFFX_API_KEY" -H "Content-Type: application/json" -d'
 {
   "version": "effx/v1",
   "kind": "service",
@@ -24,7 +24,7 @@ curl -X PUT "https://post.api.effx.io/v2/services" -H "accept: application/json"
         "label": "documentation",
         "links": [
           {
-            "url": "https://help.effx.com",
+            "url": "http://help.effx.com",
             "label": "help"
           },
           {
@@ -32,8 +32,12 @@ curl -X PUT "https://post.api.effx.io/v2/services" -H "accept: application/json"
             "label": "API"
           },
           {
-            "url": "placeholder",
-            "label": "vcs-connect"
+            "url": "https://github.com/effxhq/vcs-connect/blob/main/docs/gitlab.md",
+            "label": "vcs-connect: gitlab"
+          },
+          {
+            "url": "https://github.com/effxhq/vcs-connect/blob/main/docs/github.md",
+            "label": "vcs-connect: github"
           }
         ]
       },
@@ -41,7 +45,7 @@ curl -X PUT "https://post.api.effx.io/v2/services" -H "accept: application/json"
         "label": "dashboards",
         "links": [
           {
-            "url": "https://status.effx.com",
+            "url": "http://status.effx.com",
             "label": "status"
           },
           {
