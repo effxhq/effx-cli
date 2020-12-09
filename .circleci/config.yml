@@ -1,5 +1,9 @@
 ---
 version: 2.1
+
+orbs:
+  aws-cli: circleci/aws-cli@1.3.1
+
 jobs:
   lint:
     resource_class: small
@@ -31,11 +35,20 @@ jobs:
     steps:
       - checkout
       - run: curl -sL https://git.io/goreleaser | bash
+  upload-to-s3:
+    executor: aws-cli/default
+    steps:
+      - aws-cli/install
+      - aws-cli/setup
+      - run: aws s3 help
+
 workflows:
   version: 2
   build-workflow:
     jobs:
       - lint
+      - upload-to-s3:
+          context: effx-cli-releases
       - release:
           context: effx-cli-releases
           filters:
