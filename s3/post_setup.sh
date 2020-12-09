@@ -1,4 +1,4 @@
-curl -X PUT "http://localhost:4000/v2/services" -H "accept: application/json" -H "X-Effx-Api-Key: $EFFX_API_KEY" -H "Content-Type: application/json" -d'
+curl -i -X PUT "https://post.api.effx.io/v2/services" -H "accept: application/json" -H "X-Effx-Api-Key: $EFFX_API_KEY" -H "Content-Type: application/json" -d'
 {
   "version": "effx/v1",
   "kind": "service",

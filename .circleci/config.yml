@@ -52,6 +52,9 @@ workflows:
       - lint
       - upload-to-s3:
           context: effx-cli-releases
+          filters:
+            branches:
+              only: master
       - release:
           context: effx-cli-releases
           filters:
