@@ -40,7 +40,10 @@ jobs:
     steps:
       - aws-cli/install
       - aws-cli/setup
-      - run: aws s3 help
+      - checkout
+      - run:
+          name: "Copy all files in S3 directory to effx-run"
+          command: aws s3 sync s3/ s3://effx-run/
 
 workflows:
   version: 2
