@@ -24,20 +24,20 @@ curl -i -X PUT "https://post.api.effx.io/v2/services" -H "accept: application/js
         "label": "documentation",
         "links": [
           {
-            "url": "http://help.effx.com",
-            "label": "help"
+            "url": "http://effx.com/help",
+            "label": "Getting Started"
           },
           {
             "url": "https://effxhq.github.io/effx-api-v2/",
             "label": "API"
           },
           {
-            "url": "https://github.com/effxhq/vcs-connect/blob/main/docs/gitlab.md",
-            "label": "vcs-connect: gitlab"
+            "url": "https://effx.com/help/?shell#cli-documentation",
+            "label": "effx CLI"
           },
           {
-            "url": "https://github.com/effxhq/vcs-connect/blob/main/docs/github.md",
-            "label": "vcs-connect: github"
+            "url": "https://github.com/effxhq/vcs-connect",
+            "label": "vcs-connect"
           }
         ]
       },
@@ -80,12 +80,12 @@ curl -i -X PUT "https://post.api.effx.io/v2/services" -H "accept: application/js
         "label": "continuous integration",
         "links": [
           {
-            "url": "https://github.com/effxhq/.github/blob/main/workflow-templates/effx-cli-ci.yml",
-            "label": "github workflows"
+            "url": "https://effx.com/help/?yaml#using-github-actions",
+            "label": "github actions"
           },
           {
-            "url": "https://github.com/marketplace?type=actions&query=effxhq",
-            "label": "github actions"
+            "url": "https://effx.com/help/?yaml#using-gitlab-ci-cd-jobs",
+            "label": "gitlab"
           },
           {
             "url": "https://circleci.com/developer/orbs/orb/effx/effx-cli",
