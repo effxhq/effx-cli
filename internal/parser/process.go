@@ -62,7 +62,7 @@ func ProcessDirectory(directory string) []data.EffxYaml {
 	return yamls
 }
 
-func ProcessEvent(e *EventPayload) data.V1Data {
+func ProcessEvent(e *EventPayload) *data.V1Data {
 	tagsPayload := []effx_v1_api.TagPayload{}
 	hashtagsPayload := []string{}
 
@@ -86,7 +86,7 @@ func ProcessEvent(e *EventPayload) data.V1Data {
 		hashtagsPayload = strings.Split(hashtagsStringNoSpace, ",")
 	}
 
-	object := &data.V1Data{
+	payload := &data.V1Data{
 		Event: &effx_v1_api.EventPayload{
 			ProducedAtTimeMilliseconds: time.Now().UnixNano() / 1e6,
 			Name:                       e.Name,
@@ -100,9 +100,10 @@ func ProcessEvent(e *EventPayload) data.V1Data {
 	}
 
 	if e.Email != "" {
-		object.Event.User = &effx_v1_api.EventUserPayload{
+		payload.Event.User = &effx_v1_api.EventUserPayload{
 			Email: e.Email,
 		}
 	}
-	return *object
+
+	return payload
 }
