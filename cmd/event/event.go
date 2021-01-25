@@ -37,8 +37,8 @@ func init() {
 
 var eventCmd = &cobra.Command{
 	Use:   "event",
-	Short: "event effx.yaml file(s) to the effx api",
-	Long:  `event effx.yaml file(s) to the effx api`,
+	Short: "send events to the effx api",
+	Long:  `send events to the effx api`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if apiKeyString == "" {
 			if apiKeyString = os.Getenv(effxApiKeyName); apiKeyString == "" {
