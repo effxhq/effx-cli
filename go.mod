@@ -3,6 +3,9 @@ module github.com/effxhq/effx-cli
 go 1.13
 
 require (
+	github.com/antihax/optional v1.0.0
+	github.com/brianvoe/gofakeit v3.18.0+incompatible
+	github.com/effxhq/effx-api v0.0.0-20200914204200-31ed24619d8f
 	github.com/effxhq/effx-api-v2/generated/go/client v0.0.0-20201106192458-58722cac528c
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/spf13/cobra v0.0.5
