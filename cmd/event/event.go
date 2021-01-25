@@ -32,7 +32,7 @@ func init() {
 	eventCmd.PersistentFlags().StringVarP(&imageUrl, "image", "img", "", "image url for the event")
 	eventCmd.PersistentFlags().StringVarP(&email, "email", "", "", "email for current user")
 	eventCmd.PersistentFlags().StringVarP(&tags, "tags", "", "", "tags in the format of k:v . use commas to separate tags")
-	eventCmd.PersistentFlags().StringVarP(&tags, "hashtags", "", "", "hashtags. use commas to separate hashtags")
+	eventCmd.PersistentFlags().StringVarP(&hashtags, "hashtags", "", "", "hashtags. use commas to separate hashtags")
 }
 
 var eventCmd = &cobra.Command{
