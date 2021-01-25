@@ -17,10 +17,10 @@ var (
 	description     string
 	serviceName     string
 	integrationName string
-	hashtags        string
 	imageUrl        string
 	email           string
 	tags            string
+	hashtags        string
 )
 
 func init() {
