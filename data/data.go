@@ -2,7 +2,6 @@ package data
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -15,7 +14,6 @@ import (
 	"strings"
 
 	effx_api "github.com/effxhq/effx-api-v2/generated/go/client"
-	effx_v1_api "github.com/effxhq/effx-api/generated/go"
 )
 
 // EffxAPIHost Is the environment variable to override the API host
@@ -132,42 +130,4 @@ func checkForErrors(response *http.Response) error {
 		return fmt.Errorf("%d: %s", response.StatusCode, result)
 	}
 	return nil
-}
-
-// Data for interacting with the v1 api
-type V1Data struct {
-	Service *effx_v1_api.ServicePayload
-	Event   *effx_v1_api.EventPayload
-	Team    *effx_v1_api.TeamPayload
-	User    *effx_v1_api.UserPayload
-}
-
-func (d *V1Data) SendEvent(apiKey string) error {
-	basePath := "https://api.effx.io/v1"
-
-	if os.Getenv("EFFX_API_HOST") != "" {
-		log.Printf("switching to use basePath %s", fmt.Sprintf("%s/v1", os.Getenv("EFFX_API_HOST")))
-		basePath = fmt.Sprintf("%s/v1", os.Getenv("EFFX_API_HOST"))
-	}
-
-	client := effx_v1_api.NewAPIClient(&effx_v1_api.Configuration{
-		BasePath:      basePath,
-		DefaultHeader: make(map[string]string),
-		UserAgent:     "Swagger-Codegen/1.0.0/go",
-	})
-
-	resp, err := client.EventsApi.EventsPut(
-		context.Background(),
-		apiKey,
-		*d.Event,
-		nil,
-	)
-
-	if err != nil {
-		log.Printf("error %s", string(err.(effx_v1_api.GenericSwaggerError).Body()))
-		log.Fatal(err.Error())
-		return err
-	}
-
-	return checkForErrors(resp)
 }

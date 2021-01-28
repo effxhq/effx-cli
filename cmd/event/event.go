@@ -12,15 +12,13 @@ import (
 const effxApiKeyName = "EFFX_API_KEY"
 
 var (
-	apiKeyString    string
-	name            string
-	description     string
-	serviceName     string
-	integrationName string
-	imageUrl        string
-	email           string
-	tags            string
-	hashtags        string
+	apiKeyString string
+	name         string
+	description  string
+	serviceName  string
+	email        string
+	tags         string
+	actions      string
 )
 
 func init() {
@@ -28,11 +26,9 @@ func init() {
 	eventCmd.PersistentFlags().StringVarP(&name, "name", "", "", "name of the event")
 	eventCmd.PersistentFlags().StringVarP(&description, "desc", "", "", "text to describe the event")
 	eventCmd.PersistentFlags().StringVarP(&serviceName, "service", "", "", "service name the event is associated with")
-	eventCmd.PersistentFlags().StringVarP(&integrationName, "integration_name", "", "", "name of integration")
-	eventCmd.PersistentFlags().StringVarP(&imageUrl, "image", "img", "", "image url for the event")
 	eventCmd.PersistentFlags().StringVarP(&email, "email", "", "", "email for current user")
 	eventCmd.PersistentFlags().StringVarP(&tags, "tags", "", "", "tags in the format of k:v . use commas to separate tags")
-	eventCmd.PersistentFlags().StringVarP(&hashtags, "hashtags", "", "", "hashtags. use commas to separate hashtags")
+	eventCmd.PersistentFlags().StringVarP(&actions, "actions", "", "", "actions in the format of <level>:<name>:<url>")
 }
 
 var eventCmd = &cobra.Command{
@@ -54,14 +50,12 @@ var eventCmd = &cobra.Command{
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		payload := parser.ProcessEvent(&parser.EventPayload{
-			Name:            name,
-			Description:     description,
-			ServiceName:     serviceName,
-			IntegrationName: integrationName,
-			ImageUrl:        imageUrl,
-			Email:           email,
-			Tags:            tags,
-			Hashtags:        hashtags,
+			Name:        name,
+			Description: description,
+			ServiceName: serviceName,
+			Email:       email,
+			Tags:        tags,
+			Actions:     actions,
 		})
 
 		return payload.SendEvent(apiKeyString)
