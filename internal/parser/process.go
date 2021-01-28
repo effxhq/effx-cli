@@ -13,10 +13,10 @@ import (
 )
 
 type EventPayload struct {
+	Title       string
 	Name        string
-	Description string
+	Message     string
 	ServiceName string
-	Email       string
 	Tags        string
 	Actions     string
 }
@@ -85,6 +85,7 @@ func ProcessEvent(e *EventPayload) *data.EffxEvent {
 	if e.Actions != "" {
 		// format: level:name:url
 		res := strings.SplitN(e.Actions, ":", 3)
+
 		if len(res) < 2 {
 			log.Fatalf("found invalid tag: %s", e.Actions)
 		}
@@ -99,8 +100,8 @@ func ProcessEvent(e *EventPayload) *data.EffxEvent {
 
 	payload := &data.EffxEvent{
 		Payload: &effx_api.CreateEventPayload{
-			Title:                 e.Name,
-			Message:               e.Description,
+			Title:                 e.Title,
+			Message:               e.Message,
 			TimestampMilliseconds: time.Now().UnixNano() / 1e6,
 			Tags:                  &tagsPayload,
 			Actions:               &actions,
