@@ -4,7 +4,6 @@ import (
 	"errors"
 	"os"
 
-	// "github.com/effxhq/effx-cli/data"
 	"github.com/effxhq/effx-cli/internal/parser"
 	"github.com/spf13/cobra"
 )
