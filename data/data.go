@@ -111,14 +111,9 @@ func getEnv(key, fallback string) string {
 }
 
 func generateURL() *url.URL {
-	// u := url.URL{
-	// 	Scheme: "https",
-	// 	Host:   getEnv(EffxAPIHost, "api.effx.io"),
-	// }
-
 	u := url.URL{
 		Scheme: "https",
-		Host:   "api.effx.io",
+		Host:   getEnv(EffxAPIHost, "api.effx.io"),
 	}
 
 	if strings.HasPrefix(u.Host, "localhost") {
