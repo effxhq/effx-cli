@@ -12,7 +12,7 @@ We support the creation of services, users, and teams via `effx.yaml` files usin
 ```bash
 go run effx.go lint -d .
 go run effx.go sync -d . -k ${EFFX_API_KEY}
-go run effx.go event --title "title" --message "meassage" --service "dooku" --action "alert:name:https://pagerduty.com -k $EFFX_API_KEY --tag "key:value" 
+go run effx.go event --title "title" --message "meassage" --service "dooku" --tags "key:value" --actions "alert:name:https://pagerduty.com -k $EFFX_API_KEY 
 ```
 
 ### Github Actions

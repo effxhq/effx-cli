@@ -12,20 +12,20 @@ const effxApiKeyName = "EFFX_API_KEY"
 
 var (
 	apiKeyString string
-	result       *parser.EventPayload
+	result       *parser.EventPayload = &parser.EventPayload{}
 )
 
 func init() {
-	eventCmd.PersistentFlags().StringVarP(&apiKeyString, "key", "k", "", "your effx api key. alternatively, you can use env var EFFX_API_KEY")
-	eventCmd.PersistentFlags().StringVarP(&result.Name, "title", "", "", "name of the event")
-	eventCmd.PersistentFlags().StringVarP(&result.Title, "message", "", "", "message to describe the event")
-	eventCmd.PersistentFlags().StringVarP(&result.ServiceName, "service", "", "", "service name the event is associated with")
-	eventCmd.PersistentFlags().StringVarP(&result.Tags, "tags", "", "", "tags in the format of k:v,k1:v1 . use commas to separatewe tags")
-	eventCmd.PersistentFlags().StringVarP(&result.Actions, "actions", "", "", "actions in the format of <level>:<name>:<url>")
-	eventCmd.PersistentFlags().IntVarP(&result.ProducedAtTimeMS, "produced_at_time", "", 0, "optional time the event was created at. format is epoch milliseconds. default is current time")
+	EventCmd.PersistentFlags().StringVarP(&apiKeyString, "key", "k", "", "your effx api key. alternatively, you can use env var EFFX_API_KEY")
+	EventCmd.PersistentFlags().StringVarP(&result.Name, "title", "", "", "name of the event")
+	EventCmd.PersistentFlags().StringVarP(&result.Title, "message", "", "", "message to describe the event")
+	EventCmd.PersistentFlags().StringVarP(&result.ServiceName, "service", "", "", "service name the event is associated with")
+	EventCmd.PersistentFlags().StringVarP(&result.Tags, "tags", "", "", "tags in the format of k:v,k1:v1 . use commas to separatewe tags")
+	EventCmd.PersistentFlags().StringVarP(&result.Actions, "actions", "", "", "actions in the format of <level>:<name>:<url>")
+	EventCmd.PersistentFlags().IntVarP(&result.ProducedAtTimeMS, "produced_at_time", "", 0, "optional time the event was created at. format is epoch milliseconds. default is current time")
 }
 
-var eventCmd = &cobra.Command{
+var EventCmd = &cobra.Command{
 	Use:   "event",
 	Short: "send events to the effx api",
 	Long:  `send events to the effx api`,
