@@ -89,7 +89,7 @@ func ProcessEvent(e *EventPayload) *data.EffxEvent {
 		res := strings.SplitN(e.Actions, ":", 3)
 
 		if len(res) < 2 {
-			log.Fatalf("found invalid tag: %s", e.Actions)
+			log.Fatalf("found invalid action: %s", e.Actions)
 		}
 
 		actions = append(actions, effx_api.CreateEventPayloadActions{
