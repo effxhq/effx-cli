@@ -15,7 +15,7 @@ type EffxEvent struct {
 
 // Sync Updates the Effx API with yaml file contents
 func (y EffxEvent) SendEvent(apiKey string) error {
-	log.Printf("Syncing %+v\n", y.Payload)
+	log.Printf("Sending event payload %+v\n", y.Payload)
 
 	body, _ := json.Marshal(y.Payload)
 

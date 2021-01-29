@@ -17,8 +17,8 @@ var (
 
 func init() {
 	EventCmd.PersistentFlags().StringVarP(&apiKeyString, "key", "k", "", "your effx api key. alternatively, you can use env var EFFX_API_KEY")
-	EventCmd.PersistentFlags().StringVarP(&result.Name, "title", "", "", "name of the event")
-	EventCmd.PersistentFlags().StringVarP(&result.Title, "message", "", "", "message to describe the event")
+	EventCmd.PersistentFlags().StringVarP(&result.Title, "title", "", "", "name of the event")
+	EventCmd.PersistentFlags().StringVarP(&result.Message, "message", "", "", "message to describe the event")
 	EventCmd.PersistentFlags().StringVarP(&result.ServiceName, "service", "", "", "service name the event is associated with")
 	EventCmd.PersistentFlags().StringVarP(&result.Tags, "tags", "", "", "tags in the format of k:v,k1:v1 . use commas to separatewe tags")
 	EventCmd.PersistentFlags().StringVarP(&result.Actions, "actions", "", "", "actions in the format of <level>:<name>:<url>")
@@ -44,7 +44,7 @@ var EventCmd = &cobra.Command{
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		payload := parser.ProcessEvent(&parser.EventPayload{
-			Name:             result.Name,
+			Title:            result.Title,
 			Message:          result.Message,
 			ServiceName:      result.ServiceName,
 			Tags:             result.Tags,
