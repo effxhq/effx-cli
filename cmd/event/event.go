@@ -20,7 +20,7 @@ func init() {
 	eventCmd.PersistentFlags().StringVarP(&result.Name, "title", "", "", "name of the event")
 	eventCmd.PersistentFlags().StringVarP(&result.Title, "message", "", "", "message to describe the event")
 	eventCmd.PersistentFlags().StringVarP(&result.ServiceName, "service", "", "", "service name the event is associated with")
-	eventCmd.PersistentFlags().StringVarP(&result.Tags, "tags", "", "", "tags in the format of k:v . use commas to separatewe tags")
+	eventCmd.PersistentFlags().StringVarP(&result.Tags, "tags", "", "", "tags in the format of k:v,k1:v1 . use commas to separatewe tags")
 	eventCmd.PersistentFlags().StringVarP(&result.Actions, "actions", "", "", "actions in the format of <level>:<name>:<url>")
 	eventCmd.PersistentFlags().IntVarP(&result.ProducedAtTimeMS, "produced_at_time", "", 0, "optional time the event was created at. format is epoch milliseconds. default is current time")
 }
