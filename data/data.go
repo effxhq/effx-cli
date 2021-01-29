@@ -88,7 +88,7 @@ func (y EffxYaml) Sync(apiKey string) error {
 	body, _ := json.Marshal(config)
 
 	url := generateURL()
-	url.Path = "v2/events"
+	url.Path = "v2/config"
 
 	request, _ := http.NewRequest("PUT", url.String(), bytes.NewReader(body))
 	request.Header.Add("content-type", "application/json")

@@ -20,7 +20,7 @@ func (y EffxEvent) SendEvent(apiKey string) error {
 	body, _ := json.Marshal(y.Payload)
 
 	url := generateURL()
-	url.Path = "v2/config"
+	url.Path = "v2/events"
 
 	request, _ := http.NewRequest("PUT", url.String(), bytes.NewReader(body))
 	request.Header.Add("content-type", "application/json")
