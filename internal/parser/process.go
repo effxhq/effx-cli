@@ -13,12 +13,13 @@ import (
 )
 
 type EventPayload struct {
-	Title       string
-	Name        string
-	Message     string
-	ServiceName string
-	Tags        string
-	Actions     string
+	Title            string
+	Name             string
+	Message          string
+	ServiceName      string
+	Tags             string
+	Actions          string
+	ProducedAtTimeMS int
 }
 
 func glob(dir string, pattern string) ([]string, error) {
@@ -63,6 +64,8 @@ func ProcessDirectory(directory string) []data.EffxYaml {
 func ProcessEvent(e *EventPayload) *data.EffxEvent {
 	tagsPayload := []effx_api.CreateEventPayloadTags{}
 	actions := []effx_api.CreateEventPayloadActions{}
+	timestampMilliseconds := time.Now().UnixNano() / 1e6
+	producedAtTime := int64(e.ProducedAtTimeMS)
 
 	if e.Tags != "" {
 		tagsStringNoSpace := strings.Join(strings.Fields(e.Tags), "")
@@ -95,16 +98,20 @@ func ProcessEvent(e *EventPayload) *data.EffxEvent {
 			Name:  res[1],
 			Url:   res[2],
 		})
+	}
 
+	// if optional produced at timstamp is less than a year ago.
+	if producedAtTime < time.Now().AddDate(-1, 0, 0).UnixNano()/1e6 {
+		timestampMilliseconds = producedAtTime
 	}
 
 	payload := &data.EffxEvent{
 		Payload: &effx_api.CreateEventPayload{
 			Title:                 e.Title,
 			Message:               e.Message,
-			TimestampMilliseconds: time.Now().UnixNano() / 1e6,
 			Tags:                  &tagsPayload,
 			Actions:               &actions,
+			TimestampMilliseconds: timestampMilliseconds,
 		},
 	}
 
