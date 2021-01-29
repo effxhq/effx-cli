@@ -14,7 +14,6 @@ import (
 
 type EventPayload struct {
 	Title            string
-	Name             string
 	Message          string
 	ServiceName      string
 	Tags             string
@@ -101,7 +100,7 @@ func ProcessEvent(e *EventPayload) *data.EffxEvent {
 	}
 
 	// if optional produced at timstamp is less than a year ago.
-	if producedAtTime < time.Now().AddDate(-1, 0, 0).UnixNano()/1e6 {
+	if producedAtTime > time.Now().AddDate(-1, 0, 0).UnixNano()/1e6 {
 		timestampMilliseconds = producedAtTime
 	}
 
@@ -109,6 +108,7 @@ func ProcessEvent(e *EventPayload) *data.EffxEvent {
 		Payload: &effx_api.CreateEventPayload{
 			Title:                 e.Title,
 			Message:               e.Message,
+			ServiceName:           &e.ServiceName,
 			Tags:                  &tagsPayload,
 			Actions:               &actions,
 			TimestampMilliseconds: timestampMilliseconds,
