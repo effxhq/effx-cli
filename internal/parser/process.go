@@ -108,6 +108,7 @@ func ProcessEvent(e *EventPayload) *data.EffxEvent {
 		Payload: &effx_api.CreateEventPayload{
 			Title:                 e.Title,
 			Message:               e.Message,
+			ServiceName:           &e.ServiceName,
 			Tags:                  &tagsPayload,
 			Actions:               &actions,
 			TimestampMilliseconds: timestampMilliseconds,

@@ -43,14 +43,7 @@ var EventCmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		payload := parser.ProcessEvent(&parser.EventPayload{
-			Title:            result.Title,
-			Message:          result.Message,
-			ServiceName:      result.ServiceName,
-			Tags:             result.Tags,
-			Actions:          result.Actions,
-			ProducedAtTimeMS: result.ProducedAtTimeMS,
-		})
+		payload := parser.ProcessEvent(result)
 
 		return payload.SendEvent(apiKeyString)
 	},

@@ -22,7 +22,7 @@ func (y EffxEvent) SendEvent(apiKey string) error {
 	url := generateURL()
 	url.Path = "v2/events"
 
-	request, _ := http.NewRequest("PUT", url.String(), bytes.NewReader(body))
+	request, _ := http.NewRequest("POST", url.String(), bytes.NewReader(body))
 	request.Header.Add("content-type", "application/json")
 	request.Header.Add("x-effx-api-key", apiKey)
 
