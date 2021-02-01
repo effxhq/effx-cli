@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/effxhq/effx-cli/cmd/event"
 	"github.com/effxhq/effx-cli/cmd/lint"
 	"github.com/effxhq/effx-cli/cmd/sync"
 	"github.com/spf13/cobra"
@@ -21,6 +22,7 @@ var rootCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(lint.LintCmd)
 	rootCmd.AddCommand(sync.SyncCmd)
+	rootCmd.AddCommand(event.EventCmd)
 }
 
 func Execute() {
