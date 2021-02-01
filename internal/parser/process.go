@@ -85,18 +85,22 @@ func ProcessEvent(e *EventPayload) *data.EffxEvent {
 	}
 
 	if e.Actions != "" {
-		// format: level:name:url
-		res := strings.SplitN(e.Actions, ":", 3)
+		actionGroups := strings.Split(e.Actions, ",")
 
-		if len(res) < 2 {
-			log.Fatalf("found invalid action: %s", e.Actions)
+		for _, action := range actionGroups {
+			// format: level:name:url
+			res := strings.SplitN(action, ":", 3)
+
+			if len(res) < 2 {
+				log.Fatalf("found invalid action: %s", action)
+			}
+
+			actions = append(actions, effx_api.CreateEventPayloadActions{
+				Level: res[0],
+				Name:  res[1],
+				Url:   res[2],
+			})
 		}
-
-		actions = append(actions, effx_api.CreateEventPayloadActions{
-			Level: res[0],
-			Name:  res[1],
-			Url:   res[2],
-		})
 	}
 
 	// if optional produced at timstamp is less than a year ago.
