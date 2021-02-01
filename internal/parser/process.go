@@ -16,8 +16,8 @@ type EventPayload struct {
 	Title            string
 	Message          string
 	ServiceName      string
-	Tags             string
-	Actions          string
+	Tags             []string
+	Actions          []string
 	ProducedAtTimeMS int
 }
 
@@ -66,12 +66,9 @@ func ProcessEvent(e *EventPayload) *data.EffxEvent {
 	timestampMilliseconds := time.Now().Unix() * 1000
 	producedAtTime := int64(e.ProducedAtTimeMS)
 
-	if e.Tags != "" {
-		tagsStringNoSpace := strings.Join(strings.Fields(e.Tags), "")
-		splitTagsString := strings.Split(tagsStringNoSpace, ",")
-
-		for _, splitTag := range splitTagsString {
-			splitTagString := strings.Split(splitTag, ":")
+	if len(e.Tags) > 0 {
+		for _, tag := range e.Tags {
+			splitTagString := strings.Split(tag, ":")
 
 			if len(splitTagString) == 2 {
 				tagsPayload = append(tagsPayload, effx_api.CreateEventPayloadTags{
@@ -79,15 +76,13 @@ func ProcessEvent(e *EventPayload) *data.EffxEvent {
 					Value: splitTagString[1],
 				})
 			} else {
-				log.Fatalf("found invalid tag: %s", splitTag)
+				log.Fatalf("found invalid tag: %s", tag)
 			}
 		}
 	}
 
-	if e.Actions != "" {
-		actionGroups := strings.Split(e.Actions, ",")
-
-		for _, action := range actionGroups {
+	if len(e.Actions) > 0 {
+		for _, action := range e.Actions {
 			// format: level:name:url
 			res := strings.SplitN(action, ":", 3)
 
