@@ -1,5 +1,10 @@
 # Quickstart
 
+effx provides this command line tool that facilates validation and synchronization of effx resources in your development environment. This CLI is the foundational tool in our git-based integrations.
+
+![GitHub](https://img.shields.io/github/license/effxhq/effx-cli)
+
+
 ### Create your effx.yaml configurations
 
 We support the creation of services, users, and teams via `effx.yaml` files using the `effx-cli` tool.
