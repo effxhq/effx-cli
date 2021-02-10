@@ -4,15 +4,9 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/go-enry/go-enry/v2"
-)
-
-var (
-	// matches *.effx.yaml, effx.yaml, *.effx.yml, effx.yml
-	effxYAMLPattern, _ = regexp.Compile("^(.+\\.)?effx\\.ya?ml$")
 )
 
 func determineMostCommonLangugage(languageCount map[string]int) string {
@@ -40,7 +34,7 @@ func inferLanguage(workDir string) (string, error) {
 			fileName := filepath.Base(path)
 
 			// we don't want to look at effx files
-			if effxYAMLPattern.MatchString(fileName) {
+			if effxYamlRegex.MatchString(fileName) {
 				return nil
 			}
 
