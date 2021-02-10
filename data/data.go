@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -40,10 +41,19 @@ func (y EffxYaml) newConfig() (*effx_api.ConfigurationFile, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	lang, err := inferLanguage(filepath.Dir(y.FilePath))
+	if err != nil {
+		log.Printf("Could not predict language %+v\n", err)
+	}
+
 	config.FileContents = string(yamlFile)
 	config.SetAnnotations(map[string]string{
 		"effx.io/source":    "effx-cli",
 		"effx.io/file-path": y.FilePath,
+	})
+	config.SetTags(map[string]string{
+		"lang": lang,
 	})
 
 	return config, nil
