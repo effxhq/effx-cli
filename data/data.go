@@ -42,9 +42,9 @@ func (y EffxYaml) newConfig() (*effx_api.ConfigurationFile, error) {
 		return nil, err
 	}
 
-	lang, err := inferLanguage(filepath.Dir(y.FilePath))
+	metadata, err := inferMetadata(filepath.Dir(y.FilePath))
 	if err != nil {
-		log.Printf("Could not predict language %+v\n", err)
+		log.Printf("Could not predict version %+v\n", err)
 	}
 
 	config.FileContents = string(yamlFile)
@@ -53,12 +53,12 @@ func (y EffxYaml) newConfig() (*effx_api.ConfigurationFile, error) {
 		"effx.io/file-path": y.FilePath,
 	})
 
-	if lang != "" {
+	if metadata != nil {
 		config.SetAnnotations(map[string]string{
-			"effx.io/cli-inferred-tags": "language",
+			"effx.io/cli-inferred-tags": metadata.lang,
 		})
 		config.SetTags(map[string]string{
-			"language": lang,
+			metadata.lang: metadata.version,
 		})
 	}
 
