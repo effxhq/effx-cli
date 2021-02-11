@@ -23,8 +23,9 @@ func determineMostCommonLangugage(languageCount map[string]int) string {
 	return mostCommonLang
 }
 
-// InferLanguage detects the programming used in the provided work directory .
-func inferLanguage(workDir string) (string, error) {
+// inferLanguage detects the programming language used in the provided directory.
+// this function is passed the directories of where effx.yaml are found
+func inferLanguage(pathDir string) (string, error) {
 	languageCount := map[string]int{}
 
 	collector := func(path string, info os.FileInfo, err error) error {
@@ -55,7 +56,7 @@ func inferLanguage(workDir string) (string, error) {
 		return nil
 	}
 
-	err := filepath.Walk(workDir, collector)
+	err := filepath.Walk(pathDir, collector)
 
 	return determineMostCommonLangugage(languageCount), err
 }
