@@ -51,9 +51,7 @@ func (y EffxYaml) newConfig() (*effx_api.ConfigurationFile, error) {
 	config.SetAnnotations(map[string]string{
 		"effx.io/source":    "effx-cli",
 		"effx.io/file-path": y.FilePath,
-	})
-	config.SetTags(map[string]string{
-		"lang": lang,
+		"effx.io/lang":      lang,
 	})
 
 	return config, nil
