@@ -55,7 +55,7 @@ func (y EffxYaml) newConfig() (*effx_api.ConfigurationFile, error) {
 
 	if lang != "" {
 		config.SetAnnotations(map[string]string{
-			" effx.io/cli-inferred-tags": "lang",
+			"effx.io/cli-inferred-tags": "lang",
 		})
 		config.SetTags(map[string]string{
 			"language": lang,
