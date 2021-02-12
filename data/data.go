@@ -31,6 +31,20 @@ type EffxYaml struct {
 	FilePath string
 }
 
+func setMetadata(config *effx_api.ConfigurationFile, m *metadata.Result) *effx_api.ConfigurationFile {
+	if m != nil {
+		config.SetAnnotations(map[string]string{
+			"effx.io/inferred-tags": fmt.Sprintf("language,%s", m.Language),
+		})
+		config.SetTags(map[string]string{
+			"language": m.Language,
+			m.Language: m.Version,
+		})
+	}
+
+	return config
+}
+
 func (y EffxYaml) isEffxYaml() bool {
 	matched := effxYamlRegex.MatchString(y.FilePath)
 	return matched
@@ -49,19 +63,12 @@ func (y EffxYaml) newConfig() (*effx_api.ConfigurationFile, error) {
 		"effx.io/file-path": y.FilePath,
 	})
 
-	metadata, err := metadata.InferMetadata(filepath.Dir(y.FilePath))
+	result, err := metadata.InferMetadata(filepath.Dir(y.FilePath))
 	if err != nil {
 		log.Printf("Could not predict version %+v\n", err)
 	}
 
-	if metadata != nil {
-		config.SetAnnotations(map[string]string{
-			"effx.io/inferred-tags": metadata.Language,
-		})
-		config.SetTags(map[string]string{
-			metadata.Language: metadata.Version,
-		})
-	}
+	config = setMetadata(config, result)
 
 	return config, nil
 }
