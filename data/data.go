@@ -33,6 +33,13 @@ type EffxYaml struct {
 
 func setMetadata(config *effx_api.ConfigurationFile, m *metadata.Result) *effx_api.ConfigurationFile {
 	if m != nil {
+		if config.Annotations == nil {
+			config.Annotations = &map[string]string{}
+		}
+		if config.Tags == nil {
+			config.Tags = &map[string]string{}
+		}
+
 		(*config.Annotations)["effx.io/inferred-tags"] = fmt.Sprintf("language,%s", m.Language)
 		(*config.Tags)["language"] = m.Language
 		(*config.Tags)[m.Language] = m.Version
