@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	effx_api "github.com/effxhq/effx-api-v2/generated/go/client"
+	"github.com/effxhq/effx-cli/metadata"
 )
 
 // EffxAPIHost Is the environment variable to override the API host
@@ -42,23 +43,23 @@ func (y EffxYaml) newConfig() (*effx_api.ConfigurationFile, error) {
 		return nil, err
 	}
 
-	metadata, err := inferMetadata(filepath.Dir(y.FilePath))
-	if err != nil {
-		log.Printf("Could not predict version %+v\n", err)
-	}
-
 	config.FileContents = string(yamlFile)
 	config.SetAnnotations(map[string]string{
 		"effx.io/source":    "effx-cli",
 		"effx.io/file-path": y.FilePath,
 	})
 
+	metadata, err := metadata.InferMetadata(filepath.Dir(y.FilePath))
+	if err != nil {
+		log.Printf("Could not predict version %+v\n", err)
+	}
+
 	if metadata != nil {
 		config.SetAnnotations(map[string]string{
-			"effx.io/cli-inferred-tags": metadata.lang,
+			"effx.io/inferred-tags": metadata.Language,
 		})
 		config.SetTags(map[string]string{
-			metadata.lang: metadata.version,
+			metadata.Language: metadata.Version,
 		})
 	}
 

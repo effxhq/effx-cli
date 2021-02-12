@@ -1,29 +1,25 @@
-package data
+package metadata
 
 import (
-	"encoding/json"
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"regexp"
-	"strings"
+
+	"github.com/effxhq/effx-cli/metadata/golang"
+	"github.com/effxhq/effx-cli/metadata/javascript"
 )
 
-type PackageJson struct {
-	Engines struct {
-		Node string `json:"node"`
-	} `json:"engines"`
+type Result struct {
+	Language string
+	Version  string
 }
 
-type result struct {
-	lang    string
-	version string
+func New(lang, version string) *Result {
+	return &Result{
+		Language: lang,
+		Version:  version,
+	}
 }
-
-// regex to find go version from go.mod file
-const GoVersionRegex = `go \d+(\.\d+)+`
-
-var goModRegex = regexp.MustCompile(GoVersionRegex)
 
 func isRootDirectory(files []os.FileInfo) bool {
 	for _, file := range files {
@@ -32,34 +28,6 @@ func isRootDirectory(files []os.FileInfo) bool {
 		}
 	}
 	return false
-}
-
-func handleGoModFile(fileContent string) *result {
-	res := goModRegex.FindString(fileContent)
-	versionStr := strings.Split(res, " ")
-
-	if len(versionStr) < 2 {
-		return nil
-	}
-
-	return &result{
-		lang:    "go",
-		version: versionStr[1],
-	}
-}
-
-func handlePackageJson(fileContent string) *result {
-	var packageJson = &PackageJson{}
-
-	err := json.Unmarshal([]byte(fileContent), packageJson)
-	if err != nil {
-		return nil
-	}
-
-	return &result{
-		lang:    "node",
-		version: packageJson.Engines.Node,
-	}
 }
 
 func getRelevantFiles(lang string) []string {
@@ -73,18 +41,18 @@ func getRelevantFiles(lang string) []string {
 	}
 }
 
-func getVersion(lang string, fileContent string) *result {
+func getVersion(lang string, fileContent string) *Result {
 	switch lang {
 	case "go":
-		return handleGoModFile(fileContent)
+		return New("go", golang.HandleGoModFile(fileContent))
 	case "javascript":
-		return handlePackageJson(fileContent)
+		return New("node", javascript.HandlePackageJson(fileContent))
 	default:
 		return nil
 	}
 }
 
-func inferMetadata(pathDir string) (*result, error) {
+func InferMetadata(pathDir string) (*Result, error) {
 	lang, err := inferLanguage(pathDir)
 	if err != nil {
 		return nil, err
@@ -99,8 +67,8 @@ func inferMetadata(pathDir string) (*result, error) {
 	return version, nil
 }
 
-func inferVersion(pathDir string, lang string) (*result, error) {
-	var res *result
+func inferVersion(pathDir string, lang string) (*Result, error) {
+	var res *Result
 
 	for pathDir != "" {
 		files, err := ioutil.ReadDir(pathDir)

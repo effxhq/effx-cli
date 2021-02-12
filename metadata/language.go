@@ -1,13 +1,19 @@
-package data
+package metadata
 
 import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/go-enry/go-enry/v2"
 )
+
+// EffxYamlPattern is the regex pattern for yaml files
+const EffxYamlPattern = "(.+\\.)?effx\\.ya?ml$"
+
+var effxYamlRegex = regexp.MustCompile(EffxYamlPattern)
 
 func determineMostCommonLangugage(languageCount map[string]int) string {
 	max := 0
