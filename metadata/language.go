@@ -15,6 +15,10 @@ const EffxYamlPattern = "(.+\\.)?effx\\.ya?ml$"
 
 var effxYamlRegex = regexp.MustCompile(EffxYamlPattern)
 
+const NonCodePattern = `.yaml|.yml|.json|.md`
+
+var fileIgnorePattern = regexp.MustCompile(NonCodePattern)
+
 func determineMostCommonLangugage(languageCount map[string]int) string {
 	max := 0
 	mostCommonLang := ""
@@ -45,8 +49,8 @@ func inferLanguage(pathDir string) (string, error) {
 				return nil
 			}
 
-			// do not want to look at yaml files
-			if strings.Contains(fileName, ".yml") || strings.Contains(fileName, ".yaml") {
+			// other files to ignore
+			if fileIgnorePattern.MatchString(fileName) {
 				return nil
 			}
 
