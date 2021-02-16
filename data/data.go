@@ -31,6 +31,18 @@ type EffxYaml struct {
 	FilePath string
 }
 
+// prevents us from overwriting tags and annotations that the customer
+// has already filled in.
+func safelySetField(configMap *map[string]string, field, value string) {
+	// if field is already set, do not overwrite
+	if _, ok := (*configMap)[field]; ok {
+		return
+	}
+
+	// if field is not set, set it
+	(*configMap)[field] = value
+}
+
 func setMetadata(config *effx_api.ConfigurationFile, m *metadata.Result) *effx_api.ConfigurationFile {
 	if m != nil {
 		if config.Annotations == nil {
@@ -40,9 +52,9 @@ func setMetadata(config *effx_api.ConfigurationFile, m *metadata.Result) *effx_a
 			config.Tags = &map[string]string{}
 		}
 
-		(*config.Annotations)["effx.io/inferred-tags"] = fmt.Sprintf("language,%s", m.Language)
-		(*config.Tags)["language"] = m.Language
-		(*config.Tags)[m.Language] = m.Version
+		safelySetField(config.Annotations, "effx.io/inferred-tags", fmt.Sprintf("language,%s", m.Language))
+		safelySetField(config.Tags, "language", strings.ToLower(m.Language))
+		safelySetField(config.Tags, "m.Language", strings.ToLower(m.Version))
 	}
 
 	return config
