@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -31,8 +30,6 @@ func glob(dir string, pattern string) ([]string, error) {
 		}
 		return nil
 	})
-
-	fmt.Println("testing", files)
 
 	return files, err
 }
