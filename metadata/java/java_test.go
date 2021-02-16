@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestHandleComposerJSON(t *testing.T) {
+func TestHandlePomFile(t *testing.T) {
 	content, _ := ioutil.ReadFile("./pom.xml")
 	res := java.HandlePomFile(string(content))
 
