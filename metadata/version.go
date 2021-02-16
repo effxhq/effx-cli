@@ -16,6 +16,19 @@ type Result struct {
 	Version  string
 }
 
+type FileHandler struct {
+	Langugage string
+	FileName  string
+	Handler   func(fileContent string) string
+}
+
+func (fh *FileHandler) GetResult(fileContent string) *Result {
+	return &Result{
+		Language: fh.Langugage,
+		Version:  fh.Handler(fileContent),
+	}
+}
+
 func New(lang, version string) *Result {
 	return &Result{
 		Language: lang,
@@ -34,33 +47,38 @@ func isRootDirectory(files []os.FileInfo) bool {
 
 // there could be multiple files that can
 // contain relevant information
-func getRelevantFiles(lang string) []string {
+func getRelevantFiles(lang string) []*FileHandler {
 	switch lang {
 	case "go":
-		return []string{"go.mod"}
+		return []*FileHandler{
+			{
+				Langugage: "go",
+				FileName:  "go.mod",
+				Handler:   golang.HandleGoModFile,
+			}}
 	case "javascript":
-		return []string{"package.json"}
+		return []*FileHandler{
+			{
+				Langugage: "node",
+				FileName:  "package.json",
+				Handler:   javascript.HandlePackageJson,
+			}}
 	case "php":
-		return []string{"composer.json"}
+		return []*FileHandler{
+			{
+				Langugage: "php",
+				FileName:  "composer.json",
+				Handler:   php.HandleComposerJson,
+			}}
 	case "java":
-		return []string{"pom.xml"}
+		return []*FileHandler{
+			{
+				Langugage: "java",
+				FileName:  "pom.xml",
+				Handler:   java.HandlePomFile,
+			}}
 	default:
-		return []string{}
-	}
-}
-
-func getVersion(lang string, fileContent string) *Result {
-	switch lang {
-	case "go":
-		return New("go", golang.HandleGoModFile(fileContent))
-	case "javascript":
-		return New("node", javascript.HandlePackageJson(fileContent))
-	case "php":
-		return New("php", php.HandleComposerJson(fileContent))
-	case "java":
-		return New("java", java.HandlePomFile(fileContent))
-	default:
-		return nil
+		return []*FileHandler{}
 	}
 }
 
@@ -96,9 +114,9 @@ func inferVersion(pathDir string, lang string) (*Result, error) {
 
 				relavantFiles := getRelevantFiles(lang)
 
-				for _, relavantFile := range relavantFiles {
-					if file.Name() == relavantFile {
-						res = getVersion(lang, string(content))
+				for _, fileHandler := range relavantFiles {
+					if file.Name() == fileHandler.FileName {
+						res = fileHandler.GetResult(string(content))
 						if res != nil {
 							return res, nil
 						}
