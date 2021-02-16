@@ -6,7 +6,9 @@ import (
 	"path/filepath"
 
 	"github.com/effxhq/effx-cli/metadata/golang"
+	"github.com/effxhq/effx-cli/metadata/java"
 	"github.com/effxhq/effx-cli/metadata/javascript"
+	"github.com/effxhq/effx-cli/metadata/php"
 )
 
 type Result struct {
@@ -30,12 +32,18 @@ func isRootDirectory(files []os.FileInfo) bool {
 	return false
 }
 
+// there could be multiple files that can
+// contain relevant information
 func getRelevantFiles(lang string) []string {
 	switch lang {
 	case "go":
 		return []string{"go.mod"}
 	case "javascript":
 		return []string{"package.json"}
+	case "php":
+		return []string{"composer.json"}
+	case "java":
+		return []string{"pom.xml"}
 	default:
 		return []string{}
 	}
@@ -47,6 +55,10 @@ func getVersion(lang string, fileContent string) *Result {
 		return New("go", golang.HandleGoModFile(fileContent))
 	case "javascript":
 		return New("node", javascript.HandlePackageJson(fileContent))
+	case "php":
+		return New("php", php.HandleComposerJson(fileContent))
+	case "java":
+		return New("java", java.HandlePomFile(fileContent))
 	default:
 		return nil
 	}
@@ -61,7 +73,6 @@ func InferMetadata(pathDir string) (*Result, error) {
 	version, err := inferVersion(pathDir, lang)
 	if err != nil {
 		return nil, err
-
 	}
 
 	return version, nil

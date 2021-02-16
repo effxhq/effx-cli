@@ -1,6 +1,13 @@
 package javascript
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"strings"
+)
+
+// should we use this?
+// removes spaces and inequalites
+var replacer = strings.NewReplacer(" ", "", ">", "", "<", "", "=", "")
 
 type packageJson struct {
 	Engines struct {
@@ -16,5 +23,7 @@ func HandlePackageJson(fileContent string) string {
 		return ""
 	}
 
-	return packageJson.Engines.Node
+	versionString := packageJson.Engines.Node
+
+	return replacer.Replace(versionString)
 }

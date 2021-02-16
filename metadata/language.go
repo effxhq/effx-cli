@@ -45,6 +45,11 @@ func inferLanguage(pathDir string) (string, error) {
 				return nil
 			}
 
+			// do not want to look at yaml files
+			if strings.Contains(fileName, ".yml") || strings.Contains(fileName, ".yaml") {
+				return nil
+			}
+
 			content, err := ioutil.ReadFile(path)
 			if err != nil {
 				return err
