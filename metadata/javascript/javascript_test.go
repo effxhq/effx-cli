@@ -9,7 +9,6 @@ import (
 )
 
 func TestHandlePackageJSON(t *testing.T) {
-
 	content, _ := ioutil.ReadFile("./package.json")
 	res := javascript.HandlePackageJson(string(content))
 
