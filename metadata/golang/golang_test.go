@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestHandleComposerJSON(t *testing.T) {
+func TestHandleGoMod(t *testing.T) {
 	// using the one in this repo rather than an
 	// example
 	content, _ := ioutil.ReadFile("../../go.mod")
