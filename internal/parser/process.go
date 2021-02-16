@@ -10,6 +10,7 @@ import (
 
 	effx_api "github.com/effxhq/effx-api-v2/generated/go/client"
 	"github.com/effxhq/effx-cli/data"
+	"github.com/effxhq/effx-cli/internal/discover"
 )
 
 type EventPayload struct {
@@ -56,6 +57,8 @@ func ProcessDirectory(directory string) []data.EffxYaml {
 	for _, path := range matches {
 		yamls = append(yamls, data.EffxYaml{FilePath: path})
 	}
+
+	discover.DetectServices(matches)
 
 	return yamls
 }
