@@ -58,9 +58,19 @@ func ProcessDirectory(directory string) []data.EffxYaml {
 		yamls = append(yamls, data.EffxYaml{FilePath: path})
 	}
 
-	discover.DetectServices(matches)
-
 	return yamls
+}
+
+func DetectServicesFromEffxYamls(files []data.EffxYaml, apiKeyString, sourceName string) error {
+	filePaths := []string{}
+
+	for _, file := range files {
+		filePaths = append(filePaths, file.FilePath)
+	}
+
+	services := discover.DetectServices(filePaths)
+
+	return discover.SendDetectedServices(apiKeyString, sourceName, services)
 }
 
 func ProcessEvent(e *EventPayload) *data.EffxEvent {
@@ -113,7 +123,7 @@ func ProcessEvent(e *EventPayload) *data.EffxEvent {
 			ServiceName:           &e.ServiceName,
 			Tags:                  &tagsPayload,
 			Actions:               &actions,
-			TimestampMilliseconds: timestampMilliseconds,
+			TimestampMilliseconds: &timestampMilliseconds,
 		},
 	}
 

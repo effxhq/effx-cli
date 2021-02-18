@@ -51,6 +51,8 @@ var SyncCmd = &cobra.Command{
 				return err
 			}
 		}
+
+		parser.DetectServicesFromEffxYamls(resources, apiKeyString, "effx-cli")
 		return nil
 	},
 }

@@ -1,8 +1,14 @@
 package discover
 
 import (
+	"bytes"
+	"encoding/json"
 	"io/ioutil"
+	"net/http"
 	"strings"
+
+	effx_api "github.com/effxhq/effx-api-v2/generated/go/client"
+	"github.com/effxhq/effx-cli/data"
 )
 
 func findCommonDirectory(effxFileLocations []string) string {
@@ -58,6 +64,7 @@ func findCommonDirectory(effxFileLocations []string) string {
 	return prefixString
 }
 
+// returns a list of names of detected services
 func DetectServices(effxFileLocations []string) []string {
 	detectedServiceNames := []string{}
 
@@ -84,4 +91,28 @@ func DetectServices(effxFileLocations []string) []string {
 	}
 
 	return detectedServiceNames
+}
+
+func SendDetectedServices(apiKey, sourceName string, services []string) error {
+	for _, serviceName := range services {
+		payload := effx_api.DetectedServicesPayload{
+			Name:       serviceName,
+			SourceName: &sourceName,
+		}
+		body, _ := json.Marshal(payload)
+
+		url := data.GenerateUrl()
+		url.Path = "v2/detected_services"
+
+		request, _ := http.NewRequest("PUT", url.String(), bytes.NewReader(body))
+		request.Header.Add("content-type", "application/json")
+		request.Header.Add("x-effx-api-key", apiKey)
+
+		resp, err := http.DefaultClient.Do(request)
+		if err != nil {
+			return err
+		}
+		defer resp.Body.Close()
+	}
+	return nil
 }
