@@ -2,6 +2,7 @@ package sync
 
 import (
 	"errors"
+	"log"
 	"os"
 
 	"github.com/effxhq/effx-cli/internal/parser"
@@ -52,7 +53,9 @@ var SyncCmd = &cobra.Command{
 			}
 		}
 
-		parser.DetectServicesFromEffxYamls(resources, apiKeyString, "effx-cli")
+		err := parser.DetectServicesFromEffxYamls(resources, apiKeyString, "effx-cli")
+		log.Println("Could not send detected services, err:", err)
+
 		return nil
 	},
 }

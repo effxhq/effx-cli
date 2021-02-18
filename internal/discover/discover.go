@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strings"
 
 	effx_api "github.com/effxhq/effx-api-v2/generated/go/client"
-	"github.com/effxhq/effx-cli/data"
 )
 
 func findCommonDirectory(effxFileLocations []string) string {
@@ -93,7 +93,7 @@ func DetectServices(effxFileLocations []string) []string {
 	return detectedServiceNames
 }
 
-func SendDetectedServices(apiKey, sourceName string, services []string) error {
+func SendDetectedServices(apiKey, sourceName string, url *url.URL, services []string) error {
 	for _, serviceName := range services {
 		payload := effx_api.DetectedServicesPayload{
 			Name:       serviceName,
@@ -101,7 +101,6 @@ func SendDetectedServices(apiKey, sourceName string, services []string) error {
 		}
 		body, _ := json.Marshal(payload)
 
-		url := data.GenerateUrl()
 		url.Path = "v2/detected_services"
 
 		request, _ := http.NewRequest("PUT", url.String(), bytes.NewReader(body))
@@ -114,5 +113,7 @@ func SendDetectedServices(apiKey, sourceName string, services []string) error {
 		}
 		defer resp.Body.Close()
 	}
+
+	log.Println("Succesfully detected ", len(services), " services"))
 	return nil
 }
