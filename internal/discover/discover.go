@@ -115,6 +115,6 @@ func SendDetectedServices(apiKey, sourceName string, url *url.URL, services []st
 		defer resp.Body.Close()
 	}
 
-	log.Println("Succesfully detected ", len(services), " services")
+	log.Println("Successfully detected ", len(services), " services")
 	return nil
 }
