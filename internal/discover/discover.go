@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -114,6 +115,6 @@ func SendDetectedServices(apiKey, sourceName string, url *url.URL, services []st
 		defer resp.Body.Close()
 	}
 
-	log.Println("Succesfully detected ", len(services), " services"))
+	log.Println("Succesfully detected ", len(services), " services")
 	return nil
 }

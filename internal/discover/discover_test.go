@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestConsumer_SetupFS(t *testing.T) {
+func Test_Discover_Services(t *testing.T) {
 	dir, _ := ioutil.TempDir("", "services")
 	defer os.RemoveAll(dir)
 
