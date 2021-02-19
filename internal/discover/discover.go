@@ -95,6 +95,7 @@ func DetectServices(effxFileLocations []string) []string {
 }
 
 func SendDetectedServices(apiKey, sourceName string, url *url.URL, services []string) error {
+
 	for _, serviceName := range services {
 		payload := effx_api.DetectedServicesPayload{
 			Name:       serviceName,
@@ -115,6 +116,6 @@ func SendDetectedServices(apiKey, sourceName string, url *url.URL, services []st
 		defer resp.Body.Close()
 	}
 
-	log.Println("Successfully detected ", len(services), " services")
+	log.Println("Successfully detected ", len(services), " service(s)")
 	return nil
 }
