@@ -80,12 +80,13 @@ func (y EffxYaml) newConfig() (*effx_api.ConfigurationFile, error) {
 		"effx.io/file-path": y.FilePath,
 	})
 
-	result, err := metadata.InferMetadata(filepath.Dir(y.FilePath))
-	if err != nil {
-		log.Printf("Could not predict version %+v\n", err)
+	if os.Getenv("DISABLE_LANGUAGE_DETECTION") != "true" {
+		result, err := metadata.InferMetadata(filepath.Dir(y.FilePath))
+		if err != nil {
+			log.Printf("Could not predict version %+v\n", err)
+		}
+		config = setMetadata(config, result)
 	}
-
-	config = setMetadata(config, result)
 
 	return config, nil
 }
