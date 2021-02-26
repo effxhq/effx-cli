@@ -10,6 +10,7 @@ import (
 
 	effx_api "github.com/effxhq/effx-api-v2/generated/go/client"
 	"github.com/effxhq/effx-cli/data"
+	"github.com/effxhq/effx-cli/internal/discover"
 )
 
 type EventPayload struct {
@@ -60,10 +61,21 @@ func ProcessDirectory(directory string) []data.EffxYaml {
 	return yamls
 }
 
+func DetectServicesFromEffxYamls(files []data.EffxYaml, apiKeyString, sourceName string) error {
+	filePaths := []string{}
+
+	for _, file := range files {
+		filePaths = append(filePaths, file.FilePath)
+	}
+
+	services := discover.DetectServices(filePaths)
+
+	return discover.SendDetectedServices(apiKeyString, sourceName, data.GenerateUrl(), services)
+}
+
 func ProcessEvent(e *EventPayload) *data.EffxEvent {
 	tagsPayload := []effx_api.CreateEventPayloadTags{}
 	actions := []effx_api.CreateEventPayloadActions{}
-	timestampMilliseconds := time.Now().Unix() * 1000
 	producedAtTime := int64(e.ProducedAtTimeMS)
 
 	if len(e.Tags) > 0 {
@@ -98,20 +110,19 @@ func ProcessEvent(e *EventPayload) *data.EffxEvent {
 		}
 	}
 
-	// if optional produced at timstamp is less than a year ago.
-	if producedAtTime > time.Now().AddDate(-1, 0, 0).UnixNano()/1e6 {
-		timestampMilliseconds = producedAtTime
-	}
-
 	payload := &data.EffxEvent{
 		Payload: &effx_api.CreateEventPayload{
-			Title:                 e.Title,
-			Message:               e.Message,
-			ServiceName:           &e.ServiceName,
-			Tags:                  &tagsPayload,
-			Actions:               &actions,
-			TimestampMilliseconds: timestampMilliseconds,
+			Title:       e.Title,
+			Message:     e.Message,
+			ServiceName: &e.ServiceName,
+			Tags:        &tagsPayload,
+			Actions:     &actions,
 		},
+	}
+
+	// if optional produced at timstamp is less than a year ago.
+	if producedAtTime > time.Now().AddDate(-1, 0, 0).UnixNano()/1e6 {
+		payload.Payload.TimestampMilliseconds = &producedAtTime
 	}
 
 	return payload

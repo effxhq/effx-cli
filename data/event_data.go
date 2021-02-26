@@ -19,7 +19,7 @@ func (y EffxEvent) SendEvent(apiKey string) error {
 
 	log.Printf("Sending event payload %+v\n", string(body))
 
-	url := generateURL()
+	url := GenerateUrl()
 	url.Path = "v2/events"
 
 	request, _ := http.NewRequest("POST", url.String(), bytes.NewReader(body))

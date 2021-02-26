@@ -107,7 +107,7 @@ func (y EffxYaml) Lint() error {
 	}
 	body, _ := json.Marshal(config)
 
-	url := generateURL()
+	url := GenerateUrl()
 	url.Path = "v2/config/lint"
 
 	resp, err := http.Post(url.String(), "application/json", bytes.NewReader(body))
@@ -129,7 +129,7 @@ func (y EffxYaml) Sync(apiKey string) error {
 	}
 	body, _ := json.Marshal(config)
 
-	url := generateURL()
+	url := GenerateUrl()
 	url.Path = "v2/config"
 
 	request, _ := http.NewRequest("PUT", url.String(), bytes.NewReader(body))
@@ -152,7 +152,7 @@ func getEnv(key, fallback string) string {
 	return fallback
 }
 
-func generateURL() *url.URL {
+func GenerateUrl() *url.URL {
 	u := url.URL{
 		Scheme: "https",
 		Host:   getEnv(EffxAPIHost, "api.effx.io"),

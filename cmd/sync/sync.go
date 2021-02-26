@@ -2,6 +2,7 @@ package sync
 
 import (
 	"errors"
+	"log"
 	"os"
 
 	"github.com/effxhq/effx-cli/internal/parser"
@@ -51,12 +52,18 @@ var SyncCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		resources := parser.ProcessArgs(filePathString, directoryString)
 
+		err := parser.DetectServicesFromEffxYamls(resources, apiKeyString, "effx-cli")
+		if err != nil {
+			log.Println("Could not send detected services, err:", err)
+		}
+
 		for _, resource := range resources {
 			err := resource.Sync(apiKeyString)
 			if err != nil {
 				return err
 			}
 		}
+
 		return nil
 	},
 }
