@@ -10,10 +10,12 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 
 	effx_api "github.com/effxhq/effx-api-v2/generated/go/client"
+	"github.com/effxhq/effx-cli/metadata"
 )
 
 // EffxAPIHost Is the environment variable to override the API host
@@ -29,6 +31,37 @@ type EffxYaml struct {
 	FilePath string
 }
 
+// prevents us from overwriting tags and annotations that the customer
+// has already filled in.
+func safelySetField(configMap *map[string]string, field, value string) {
+	// if field is already set, do not overwrite
+	if _, ok := (*configMap)[field]; ok {
+		return
+	}
+
+	// if field is not set, set it
+	(*configMap)[field] = value
+}
+
+func setMetadata(config *effx_api.ConfigurationFile, m *metadata.Result) *effx_api.ConfigurationFile {
+	if m != nil {
+		if config.Annotations == nil {
+			config.Annotations = &map[string]string{}
+		}
+		if config.Tags == nil {
+			config.Tags = &map[string]string{}
+		}
+
+		if m.Language != "" && m.Version != "" {
+			safelySetField(config.Annotations, "effx.io/inferred-tags", fmt.Sprintf("language,%s", m.Language))
+			safelySetField(config.Tags, "language", strings.ToLower(m.Language))
+			safelySetField(config.Tags, m.Language, strings.ToLower(m.Version))
+		}
+	}
+
+	return config
+}
+
 func (y EffxYaml) isEffxYaml() bool {
 	matched := effxYamlRegex.MatchString(y.FilePath)
 	return matched
@@ -40,11 +73,20 @@ func (y EffxYaml) newConfig() (*effx_api.ConfigurationFile, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	config.FileContents = string(yamlFile)
 	config.SetAnnotations(map[string]string{
 		"effx.io/source":    "effx-cli",
 		"effx.io/file-path": y.FilePath,
 	})
+
+	if os.Getenv("DISABLE_LANGUAGE_DETECTION") != "true" {
+		result, err := metadata.InferMetadata(filepath.Dir(y.FilePath))
+		if err != nil {
+			log.Printf("Could not predict version %+v\n", err)
+		}
+		config = setMetadata(config, result)
+	}
 
 	return config, nil
 }

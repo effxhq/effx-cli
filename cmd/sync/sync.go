@@ -12,15 +12,17 @@ import (
 const effxApiKeyName = "EFFX_API_KEY"
 
 var (
-	apiKeyString    string
-	directoryString string
-	filePathString  string
+	apiKeyString             string
+	directoryString          string
+	filePathString           string
+	disableLanguageDetection bool
 )
 
 func init() {
 	SyncCmd.PersistentFlags().StringVarP(&apiKeyString, "key", "k", "", "your effx api key. alternatively, you can use env var EFFX_API_KEY")
 	SyncCmd.PersistentFlags().StringVarP(&filePathString, "file", "f", "", "path to a effx.yaml file")
 	SyncCmd.PersistentFlags().StringVarP(&directoryString, "dir", "d", "", "directory to recursively find and sync effx.yaml files")
+	SyncCmd.PersistentFlags().BoolVarP(&disableLanguageDetection, "disable-languauge-detection", "", false, "disables automatic langugage and version detections")
 }
 
 var SyncCmd = &cobra.Command{
@@ -40,6 +42,10 @@ var SyncCmd = &cobra.Command{
 
 		if filePathString != "" && directoryString != "" {
 			return errors.New("-f <file_path> and -d <directory> cannot be used together")
+		}
+
+		if disableLanguageDetection {
+			os.Setenv("DISABLE_LANGUAGE_DETECTION", "true")
 		}
 		return nil
 	},
