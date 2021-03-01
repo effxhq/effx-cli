@@ -3,13 +3,17 @@ package discover
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
+	"os"
+	"path/filepath"
 	"strings"
 
 	effx_api "github.com/effxhq/effx-api-v2/generated/go/client"
+	"github.com/effxhq/effx-cli/metadata"
 )
 
 func findCommonDirectory(effxFileLocations []string) string {
@@ -66,14 +70,14 @@ func findCommonDirectory(effxFileLocations []string) string {
 }
 
 // returns a list of names of detected services
-func DetectServices(effxFileLocations []string) []string {
-	detectedServiceNames := []string{}
+func DetectServices(sourceName string, effxFileLocations []string) []effx_api.DetectedServicesPayload {
+	detectedServices := []effx_api.DetectedServicesPayload{}
 
 	commonDir := findCommonDirectory(effxFileLocations)
 
 	files, err := ioutil.ReadDir(commonDir)
 	if err != nil {
-		return []string{}
+		return detectedServices
 	}
 
 	for _, file := range files {
@@ -86,21 +90,34 @@ func DetectServices(effxFileLocations []string) []string {
 				}
 			}
 			if !contains {
-				detectedServiceNames = append(detectedServiceNames, file.Name())
+				payload := effx_api.DetectedServicesPayload{
+					Name:       strings.ToLower(file.Name()),
+					SourceName: &sourceName,
+				}
+				if os.Getenv("DISABLE_LANGUAGE_DETECTION") != "true" {
+					result, err := metadata.InferMetadata(filepath.Dir(commonDir + file.Name()))
+					if err != nil {
+						log.Printf("Could not predict version %+v\n", err)
+					}
+
+					if result != nil && result.Language != "" && result.Version != "" {
+						payload.Tags = &map[string]string{}
+						(*payload.Tags)["language"] = strings.ToLower(result.Language)
+						(*payload.Tags)[strings.ToLower(result.Language)] = strings.ToLower(result.Version)
+					}
+				}
+				detectedServices = append(detectedServices, payload)
+				fmt.Println("detected service name", payload.Name)
+				fmt.Println("detected service tags", *payload.Tags)
 			}
 		}
 	}
 
-	return detectedServiceNames
+	return detectedServices
 }
 
-func SendDetectedServices(apiKey, sourceName string, url *url.URL, services []string) error {
-
-	for _, serviceName := range services {
-		payload := effx_api.DetectedServicesPayload{
-			Name:       serviceName,
-			SourceName: &sourceName,
-		}
+func SendDetectedServices(apiKey string, url *url.URL, servicePayloads []effx_api.DetectedServicesPayload) error {
+	for _, payload := range servicePayloads {
 		body, _ := json.Marshal(payload)
 
 		url.Path = "v2/detected_services"
@@ -116,6 +133,6 @@ func SendDetectedServices(apiKey, sourceName string, url *url.URL, services []st
 		defer resp.Body.Close()
 	}
 
-	log.Println("Successfully detected ", len(services), " service(s)")
+	log.Println("Successfully detected ", len(servicePayloads), " service(s)")
 	return nil
 }

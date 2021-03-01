@@ -53,9 +53,11 @@ func setMetadata(config *effx_api.ConfigurationFile, m *metadata.Result) *effx_a
 		}
 
 		if m.Language != "" && m.Version != "" {
+			language := strings.ToLower(m.Language)
+			version := strings.ToLower(m.Version)
 			safelySetField(config.Annotations, "effx.io/inferred-tags", fmt.Sprintf("language,%s", m.Language))
-			safelySetField(config.Tags, "language", strings.ToLower(m.Language))
-			safelySetField(config.Tags, m.Language, strings.ToLower(m.Version))
+			safelySetField(config.Tags, "language", language)
+			safelySetField(config.Tags, language, version)
 		}
 	}
 

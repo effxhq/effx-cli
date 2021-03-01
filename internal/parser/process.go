@@ -68,9 +68,9 @@ func DetectServicesFromEffxYamls(files []data.EffxYaml, apiKeyString, sourceName
 		filePaths = append(filePaths, file.FilePath)
 	}
 
-	services := discover.DetectServices(filePaths)
+	services := discover.DetectServices(sourceName, filePaths)
 
-	return discover.SendDetectedServices(apiKeyString, sourceName, data.GenerateUrl(), services)
+	return discover.SendDetectedServices(apiKeyString, data.GenerateUrl(), services)
 }
 
 func ProcessEvent(e *EventPayload) *data.EffxEvent {
