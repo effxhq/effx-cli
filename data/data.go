@@ -45,6 +45,9 @@ func safelySetField(configMap *map[string]string, field, value string) {
 
 func setMetadata(config *effx_api.ConfigurationFile, m *metadata.Result) *effx_api.ConfigurationFile {
 	if m != nil {
+		language := strings.ToLower(m.Language)
+		version := strings.ToLower(m.Version)
+
 		if config.Annotations == nil {
 			config.Annotations = &map[string]string{}
 		}
@@ -52,11 +55,13 @@ func setMetadata(config *effx_api.ConfigurationFile, m *metadata.Result) *effx_a
 			config.Tags = &map[string]string{}
 		}
 
-		if m.Language != "" && m.Version != "" {
-			language := strings.ToLower(m.Language)
-			version := strings.ToLower(m.Version)
-			safelySetField(config.Annotations, "effx.io/inferred-tags", fmt.Sprintf("language,%s", m.Language))
+		if language != "" {
+			safelySetField(config.Annotations, "effx.io/inferred-tags", "language")
 			safelySetField(config.Tags, "language", language)
+		}
+
+		if language != "" && version != "" {
+			safelySetField(config.Annotations, "effx.io/inferred-tags", fmt.Sprintf("language,%s", m.Language))
 			safelySetField(config.Tags, language, version)
 		}
 	}
