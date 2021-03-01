@@ -61,13 +61,7 @@ func ProcessDirectory(directory string) []data.EffxYaml {
 	return yamls
 }
 
-func DetectServicesFromEffxYamls(files []data.EffxYaml, apiKeyString, sourceName string) error {
-	filePaths := []string{}
-
-	for _, file := range files {
-		filePaths = append(filePaths, file.FilePath)
-	}
-
+func DetectServicesFromEffxYamls(filePaths []string, apiKeyString, sourceName string) error {
 	services := discover.DetectServices(sourceName, filePaths)
 
 	return discover.SendDetectedServices(apiKeyString, data.GenerateUrl(), services)
