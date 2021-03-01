@@ -31,33 +31,38 @@ type EffxYaml struct {
 	FilePath string
 }
 
-// prevents us from overwriting tags and annotations that the customer
-// has already filled in.
-func safelySetField(configMap *map[string]string, field, value string) {
-	// if field is already set, do not overwrite
-	if _, ok := (*configMap)[field]; ok {
-		return
-	}
-
-	// if field is not set, set it
-	(*configMap)[field] = value
-}
-
 func setMetadata(config *effx_api.ConfigurationFile, m *metadata.Result) *effx_api.ConfigurationFile {
-	if m != nil {
-		if config.Annotations == nil {
-			config.Annotations = &map[string]string{}
-		}
-		if config.Tags == nil {
-			config.Tags = &map[string]string{}
-		}
-
-		if m.Language != "" && m.Version != "" {
-			safelySetField(config.Annotations, "effx.io/inferred-tags", fmt.Sprintf("language,%s", m.Language))
-			safelySetField(config.Tags, "language", strings.ToLower(m.Language))
-			safelySetField(config.Tags, m.Language, strings.ToLower(m.Version))
-		}
+	if m == nil {
+		return config
 	}
+
+	var inferredTags []string
+	tags, ok := config.GetTagsOk()
+	if !ok {
+		tags = &map[string]string{}
+	}
+
+	annotations, ok := config.GetAnnotationsOk()
+	if !ok {
+		annotations = &map[string]string{}
+	}
+
+	if m.Language != "" {
+		languageTag := "language"
+		(*tags)[languageTag] = m.Language
+		inferredTags = append(inferredTags, languageTag)
+	}
+
+	if m.Language != "" && m.Version != "" {
+		langVersionTag := strings.ToLower(m.Language)
+		(*tags)[langVersionTag] = strings.ToLower(m.Version)
+		inferredTags = append(inferredTags, langVersionTag)
+	}
+
+	(*annotations)["effx.io/inferred-tags"] = strings.Join(inferredTags, ",")
+
+	config.SetTags(*tags)
+	config.SetAnnotations(*annotations)
 
 	return config
 }
