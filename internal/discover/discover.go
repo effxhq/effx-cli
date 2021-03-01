@@ -3,7 +3,6 @@ package discover
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -107,8 +106,6 @@ func DetectServices(sourceName string, effxFileLocations []string) []effx_api.De
 					}
 				}
 				detectedServices = append(detectedServices, payload)
-				fmt.Println("detected service name", payload.Name)
-				fmt.Println("detected service tags", *payload.Tags)
 			}
 		}
 	}
