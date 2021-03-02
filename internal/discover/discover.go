@@ -92,6 +92,7 @@ func DetectServices(sourceName string, effxFileLocations []string) []effx_api.De
 				payload := effx_api.DetectedServicesPayload{
 					Name:       strings.ToLower(file.Name()),
 					SourceName: &sourceName,
+					Tags:       &map[string]string{},
 				}
 				if os.Getenv("DISABLE_LANGUAGE_DETECTION") != "true" {
 					result, err := metadata.InferMetadata(filepath.Dir(commonDir + file.Name()))
@@ -99,10 +100,16 @@ func DetectServices(sourceName string, effxFileLocations []string) []effx_api.De
 						log.Printf("Could not predict version %+v\n", err)
 					}
 
-					if result != nil && result.Language != "" && result.Version != "" {
-						payload.Tags = &map[string]string{}
-						(*payload.Tags)["language"] = strings.ToLower(result.Language)
-						(*payload.Tags)[strings.ToLower(result.Language)] = strings.ToLower(result.Version)
+					if result != nil {
+						if result.Language != "" {
+							language := strings.ToLower(result.Language)
+							(*payload.Tags)["language"] = language
+
+							// version cannot be found if language cannot be detected
+							if result.Version != "" {
+								(*payload.Tags)[language] = strings.ToLower(result.Version)
+							}
+						}
 					}
 				}
 				detectedServices = append(detectedServices, payload)
