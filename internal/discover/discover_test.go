@@ -22,8 +22,8 @@ func Test_Discover_Services(t *testing.T) {
 
 	input := []string{tedrynFile.Name(), wattoFile.Name()}
 
-	res := discover.DetectServices(input)
+	res := discover.DetectServices("effx-cli", input)
 
 	require.Len(t, res, 1)
-	require.Contains(t, res[0], "watto")
+	require.Contains(t, res[0].Name, "watto")
 }
