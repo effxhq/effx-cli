@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/effxhq/effx-cli/internal/discover"
+	"github.com/effxhq/effx-cli/discover"
 	"github.com/stretchr/testify/require"
 )
 
