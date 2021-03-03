@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/effxhq/effx-cli/discover"
 	"github.com/effxhq/effx-cli/internal/parser"
 	"github.com/spf13/cobra"
 )
@@ -52,7 +53,7 @@ var SyncCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		resources := parser.ProcessArgs(filePathString, directoryString)
 
-		err := parser.DetectServicesFromEffxYamls(resources, apiKeyString, "effx-cli")
+		err := discover.DetectServicesFromEffxYamls(resources, apiKeyString, "effx-cli")
 		if err != nil {
 			log.Println("Could not send detected services, err:", err)
 		}

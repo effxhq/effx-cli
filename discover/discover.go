@@ -12,8 +12,26 @@ import (
 	"strings"
 
 	effx_api "github.com/effxhq/effx-api-v2/generated/go/client"
+	"github.com/effxhq/effx-cli/data"
+	"github.com/effxhq/effx-cli/internal/parser"
 	"github.com/effxhq/effx-cli/metadata"
 )
+
+func DetectServicesFromWorkDir(workDir string, apiKeyString, sourceName string) error {
+	filePaths := parser.ProcessDirectory(workDir)
+	return DetectServicesFromEffxYamls(filePaths, apiKeyString, sourceName)
+}
+
+func DetectServicesFromEffxYamls(files []data.EffxYaml, apiKeyString, sourceName string) error {
+	filePaths := []string{}
+
+	for _, file := range files {
+		filePaths = append(filePaths, file.FilePath)
+	}
+
+	services := DetectServices(sourceName, filePaths)
+	return SendDetectedServices(apiKeyString, data.GenerateUrl(), services)
+}
 
 func findCommonDirectory(effxFileLocations []string) string {
 	matchedEffxFiles := generateIterators(effxFileLocations)
