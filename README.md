@@ -20,8 +20,9 @@ go run effx.go sync -d . -k ${EFFX_API_KEY}
 go run effx.go event --title "title" --message "meassage" --service "dooku" --tags "key:value" --actions "alert:name:https://pagerduty.com -k $EFFX_API_KEY 
 ```
 
-### disable automatic language and version detection
-```
+### Disable Automatic Language and Version Detection
+
+```bash
 go run effx.go sync -d . -k ${EFFX_API_KEY} --disable-languauge-detection
 ```
 

@@ -1,0 +1,8 @@
+{
+    "name": "yes",
+    "config": {
+        "platform": {
+            "php": "5.6.1"
+        }
+    }
+}
