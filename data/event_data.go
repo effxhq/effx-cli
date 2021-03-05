@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	effx_api "github.com/effxhq/effx-api-v2-generated/generated/go/client"
+	effx_api "github.com/effxhq/effx-api-v2-go/generated/go/client"
 )
 
 type EffxEvent struct {

@@ -48,10 +48,13 @@ github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSs
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/effxhq/effx-api-v2-generated v0.0.0-20210305162402-c448de3866be h1:l6Ol/buiid3lr1MDU1NTRylC4/BsVV2YYTyNEW40RHY=
-github.com/effxhq/effx-api-v2-generated/generated/go/client v0.0.0-20210305162402-c448de3866be h1:czdX63qoF9Vl5unoPQuOpvGex0nQZunDj4CisCPIklw=
-github.com/effxhq/effx-api-v2-generated/generated/go/client v0.0.0-20210305162402-c448de3866be/go.mod h1:ly1+K4d3htZ6LqaWdieIuNuJuLlCRaPrT6BCasi37tg=
-github.com/effxhq/effx-api-v2-generated/generated/go/client v0.0.0-20210217201049-ab6505970c62 h1:yZrZGl7cJv/0TDjcun6asfEsriIgMa/FADXTKu16wWc=
-github.com/effxhq/effx-api-v2-generated/generated/go/client v0.0.0-20210217201049-ab6505970c62/go.mod h1:8jVqAfklB8MqGZyUfMvReuQZwTB+OJlR6ytlOYg3Zg8=
+github.com/effxhq/effx-api-v2-go v0.0.0-20210305204656-5327111dd77a h1:iCh9T31AEq5VRxWWy33XvbQ81JNheMQrMbtL1G6Wd+4=
+github.com/effxhq/effx-api-v2-go/generated/go/client v0.0.0-20210217201049-ab6505970c62 h1:yZrZGl7cJv/0TDjcun6asfEsriIgMa/FADXTKu16wWc=
+github.com/effxhq/effx-api-v2-go/generated/go/client v0.0.0-20210217201049-ab6505970c62/go.mod h1:8jVqAfklB8MqGZyUfMvReuQZwTB+OJlR6ytlOYg3Zg8=
+github.com/effxhq/effx-api-v2-go/generated/go/client v0.0.0-20210305162402-c448de3866be h1:czdX63qoF9Vl5unoPQuOpvGex0nQZunDj4CisCPIklw=
+github.com/effxhq/effx-api-v2-go/generated/go/client v0.0.0-20210305162402-c448de3866be/go.mod h1:ly1+K4d3htZ6LqaWdieIuNuJuLlCRaPrT6BCasi37tg=
+github.com/effxhq/effx-api-v2-go/generated/go/client v0.0.0-20210305204656-5327111dd77a h1:bQmC6Dw8IGMegVvWYD3e2E4wvPgZRWMDMXccWq0kdXE=
+github.com/effxhq/effx-api-v2-go/generated/go/client v0.0.0-20210305204656-5327111dd77a/go.mod h1:sOyAbPG79n2nWlnNKqe5JhuKNwBYenSamnm9v903XA4=
 github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.1-0.20191026205805-5f8ba28d4473/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.4/go.mod h1:6rpuAdCZL397s3pYoYcLgu1mIlRU8Am5FuJP05cCM98=
