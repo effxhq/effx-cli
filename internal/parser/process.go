@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	effx_api "github.com/effxhq/effx-api-v2/generated/go/client"
+	effx_api "github.com/effxhq/effx-api-v2-generated/generated/go/client"
 	"github.com/effxhq/effx-cli/data"
 )
 

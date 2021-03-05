@@ -47,8 +47,11 @@ github.com/cpuguy83/go-md2man v1.0.10/go.mod h1:SmD6nW6nTyfqj6ABTjUi3V3JVMnlJmwc
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/effxhq/effx-api-v2/generated/go/client v0.0.0-20210217201049-ab6505970c62 h1:yZrZGl7cJv/0TDjcun6asfEsriIgMa/FADXTKu16wWc=
-github.com/effxhq/effx-api-v2/generated/go/client v0.0.0-20210217201049-ab6505970c62/go.mod h1:8jVqAfklB8MqGZyUfMvReuQZwTB+OJlR6ytlOYg3Zg8=
+github.com/effxhq/effx-api-v2-generated v0.0.0-20210305162402-c448de3866be h1:l6Ol/buiid3lr1MDU1NTRylC4/BsVV2YYTyNEW40RHY=
+github.com/effxhq/effx-api-v2-generated/generated/go/client v0.0.0-20210305162402-c448de3866be h1:czdX63qoF9Vl5unoPQuOpvGex0nQZunDj4CisCPIklw=
+github.com/effxhq/effx-api-v2-generated/generated/go/client v0.0.0-20210305162402-c448de3866be/go.mod h1:ly1+K4d3htZ6LqaWdieIuNuJuLlCRaPrT6BCasi37tg=
+github.com/effxhq/effx-api-v2-generated/generated/go/client v0.0.0-20210217201049-ab6505970c62 h1:yZrZGl7cJv/0TDjcun6asfEsriIgMa/FADXTKu16wWc=
+github.com/effxhq/effx-api-v2-generated/generated/go/client v0.0.0-20210217201049-ab6505970c62/go.mod h1:8jVqAfklB8MqGZyUfMvReuQZwTB+OJlR6ytlOYg3Zg8=
 github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.1-0.20191026205805-5f8ba28d4473/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.4/go.mod h1:6rpuAdCZL397s3pYoYcLgu1mIlRU8Am5FuJP05cCM98=
@@ -233,6 +236,8 @@ golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6/go.mod h1:gOpvHmFTYa4Iltr
 golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d/go.mod h1:gOpvHmFTYa4IltrdGE7lF6nIHvwfUNPOp7c8zoXwtLw=
 golang.org/x/oauth2 v0.0.0-20210126194326-f9ce19ea3013 h1:55H5j7lotzuFCEOKDsMch+fRNUQ9DgtyHOUP31FNqKc=
 golang.org/x/oauth2 v0.0.0-20210126194326-f9ce19ea3013/go.mod h1:KelEdhl1UZF7XfJ4dDtk6s++YSgaE7mD/BuKKDLBl4A=
+golang.org/x/oauth2 v0.0.0-20210218202405-ba52d332ba99 h1:5vD4XjIc0X5+kHZjx4UecYdjA6mJo+XXNoaW0EjU5Os=
+golang.org/x/oauth2 v0.0.0-20210218202405-ba52d332ba99/go.mod h1:KelEdhl1UZF7XfJ4dDtk6s++YSgaE7mD/BuKKDLBl4A=
 golang.org/x/sync v0.0.0-20180314180146-1d60e4601c6f/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
 golang.org/x/sync v0.0.0-20181108010431-42b317875d0f/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
 golang.org/x/sync v0.0.0-20181221193216-37e7f081c4d4/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=

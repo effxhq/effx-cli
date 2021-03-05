@@ -14,7 +14,7 @@ import (
 	effx_api "github.com/effxhq/effx-api-v2-generated/generated/go/client"
 	"github.com/effxhq/effx-cli/data"
 	"github.com/effxhq/effx-cli/internal/parser"
-	"github.com/effxhq/effx-cli/metadata"
+	"github.com/effxhq/effx-cli/pkg/metadata"
 )
 
 func DetectServicesFromWorkDir(workDir string, apiKeyString, sourceName string) error {

@@ -3,7 +3,7 @@ module github.com/effxhq/effx-cli
 go 1.13
 
 require (
-	github.com/effxhq/effx-api-v2/generated/go/client v0.0.0-20210217201049-ab6505970c62
+	github.com/effxhq/effx-api-v2-generated/generated/go/client v0.0.0-20210217201049-ab6505970c62
 	github.com/go-enry/go-enry/v2 v2.6.0
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/spf13/cobra v0.0.5
