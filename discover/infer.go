@@ -28,7 +28,7 @@ var relavantFiles = []string{
 }
 
 // DetectServicesFromRelavantFiles detects services based on
-// containing a service-like file (package.json ect)
+// containing a service-like file (package.json etc)
 func DetectServicesFromRelavantFiles(workdir string, effxFiles []data.EffxYaml, sourceName string) ([]effx_api.DetectedServicesPayload, error) {
 	detectedServices := []effx_api.DetectedServicesPayload{}
 	effxFileLocations := filePathsFromEffxYaml(effxFiles)
@@ -41,7 +41,7 @@ func DetectServicesFromRelavantFiles(workdir string, effxFiles []data.EffxYaml, 
 				return nil
 			}
 
-			// if directory name contain "services", "apps" ect.
+			// if directory name contain "services", "apps" etc.
 			for _, relavantName := range serviceDirectoryNames {
 				if strings.Contains(dirName, relavantName) {
 					detectedServices = append(detectedServices, createDetectedServicePayload(f, sourceName, path))
