@@ -69,6 +69,20 @@ func createDetectedServicePayload(file os.FileInfo, sourceName string, commonDir
 	return payload
 }
 
+func removeDuplicateServices(input []effx_api.DetectedServicesPayload) []effx_api.DetectedServicesPayload {
+	serviceMap := map[string]bool{}
+	result := []effx_api.DetectedServicesPayload{}
+
+	for _, service := range input {
+		if _, ok := serviceMap[service.Name]; !ok {
+			result = append(result, service)
+			serviceMap[service.Name] = true
+		}
+	}
+
+	return result
+}
+
 func DetectServicesFromWorkDir(workDir string, apiKeyString, sourceName string) error {
 	filePaths := parser.ProcessDirectory(workDir)
 	services, err := DetectServicesFromRelavantFiles(workDir, filePaths, sourceName)
@@ -78,12 +92,12 @@ func DetectServicesFromWorkDir(workDir string, apiKeyString, sourceName string) 
 
 	servicesInferredFromYaml := DetectServicesFromEffxYamls(filePaths, apiKeyString, sourceName)
 	services = append(services, servicesInferredFromYaml...)
+	services = removeDuplicateServices(services)
 
 	return SendDetectedServices(apiKeyString, data.GenerateUrl(), services)
 }
 
-// returns a list of names of detected services
-
+// returns detected service by looking at existing effx yaml patterns
 func DetectServicesFromEffxYamls(effxFiles []data.EffxYaml, apiKeyString, sourceName string) []effx_api.DetectedServicesPayload {
 	effxFileLocations := filePathsFromEffxYaml(effxFiles)
 	detectedServices := []effx_api.DetectedServicesPayload{}
