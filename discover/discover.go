@@ -31,13 +31,12 @@ func directoryContainsEffxYaml(file os.FileInfo, effxFileLocations []string) boo
 		return false
 	}
 
-	contains := false
 	for _, effxFileLocation := range effxFileLocations {
 		if strings.Contains(effxFileLocation, file.Name()) {
-			contains = true
+			return true
 		}
 	}
-	return contains
+	return false
 }
 
 func createDetectedServicePayload(file os.FileInfo, sourceName string, commonDir string) effx_api.DetectedServicesPayload {

@@ -41,11 +41,19 @@ func DetectServicesFromRelavantFiles(workdir string, effxFiles []data.EffxYaml, 
 				return nil
 			}
 
-			// if directory name contain "services", "apps" etc.
+			// if directory name contain "services", "apps" etc, all subdirectories
+			// are services.
 			for _, relavantName := range serviceDirectoryNames {
 				if strings.Contains(dirName, relavantName) {
-					detectedServices = append(detectedServices, createDetectedServicePayload(f, sourceName, path))
-					return nil
+					files, err := ioutil.ReadDir(path + "/" + f.Name())
+					if err == nil {
+						for _, file := range files {
+							if file.IsDir() {
+								detectedServices = append(detectedServices, createDetectedServicePayload(f, sourceName, path))
+							}
+						}
+						return nil
+					}
 				}
 			}
 
