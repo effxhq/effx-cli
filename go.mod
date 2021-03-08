@@ -9,6 +9,7 @@ require (
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/testify v1.4.0
+	github.com/thoas/go-funk v0.7.0
 	golang.org/x/net v0.0.0-20210119194325-5f4716e94777 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 )

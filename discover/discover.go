@@ -17,77 +17,75 @@ import (
 	"github.com/effxhq/effx-cli/metadata"
 )
 
-func DetectServicesFromWorkDir(workDir string, apiKeyString, sourceName string) error {
-	filePaths := parser.ProcessDirectory(workDir)
-	return DetectServicesFromEffxYamls(filePaths, apiKeyString, sourceName)
-}
-
-func DetectServicesFromEffxYamls(files []data.EffxYaml, apiKeyString, sourceName string) error {
+func filePathsFromEffxYaml(files []data.EffxYaml) []string {
 	filePaths := []string{}
 
 	for _, file := range files {
 		filePaths = append(filePaths, file.FilePath)
 	}
+	return filePaths
+}
 
-	services := DetectServices(sourceName, filePaths)
+func directoryContainsEffxYaml(file os.FileInfo, effxFileLocations []string) bool {
+	if !file.IsDir() {
+		return false
+	}
+
+	contains := false
+	for _, effxFileLocation := range effxFileLocations {
+		if strings.Contains(effxFileLocation, file.Name()) {
+			contains = true
+		}
+	}
+	return contains
+}
+
+func createDetectedServicePayload(file os.FileInfo, sourceName string, commonDir string) effx_api.DetectedServicesPayload {
+	payload := effx_api.DetectedServicesPayload{
+		Name:       strings.ToLower(file.Name()),
+		SourceName: &sourceName,
+		Tags:       &map[string]string{},
+	}
+
+	if os.Getenv("DISABLE_LANGUAGE_DETECTION") != "true" {
+		result, err := metadata.InferMetadata(filepath.Dir(commonDir + file.Name()))
+		if err != nil {
+			log.Printf("Could not predict version %+v\n", err)
+		}
+
+		if result != nil {
+			if result.Language != "" {
+				language := strings.ToLower(result.Language)
+				(*payload.Tags)["language"] = language
+
+				// version cannot be found if language cannot be detected
+				if result.Version != "" {
+					(*payload.Tags)[language] = strings.ToLower(result.Version)
+				}
+			}
+		}
+	}
+
+	return payload
+}
+
+func DetectServicesFromWorkDir(workDir string, apiKeyString, sourceName string) error {
+	filePaths := parser.ProcessDirectory(workDir)
+	services, err := DetectServicesFromRelavantFiles(workDir, filePaths, sourceName)
+	if err != nil {
+		return err
+	}
+
+	servicesInferredFromYaml := DetectServicesFromEffxYamls(filePaths, apiKeyString, sourceName)
+	services = append(services, servicesInferredFromYaml...)
+
 	return SendDetectedServices(apiKeyString, data.GenerateUrl(), services)
 }
 
-func findCommonDirectory(effxFileLocations []string) string {
-	matchedEffxFiles := generateIterators(effxFileLocations)
-	prefixString := ""
-
-	for len(matchedEffxFiles) > 0 {
-		count := make(map[string]int)
-		for _, matchedFile := range matchedEffxFiles {
-			peek := matchedFile.Peek()
-			if peek != "" {
-				count[peek]++
-			}
-		}
-
-		maxK := ""
-		maxV := 1
-		for k, v := range count {
-			if v > maxV {
-				maxK = k
-				maxV = v
-			}
-		}
-
-		nextRound := make([]*Iterator, 0, maxV)
-		for _, matchedFile := range matchedEffxFiles {
-			// advance ptr
-			if matchedFile.Next() == maxK {
-				// put into next
-				nextRound = append(nextRound, matchedFile)
-			}
-		}
-
-		prefixString += maxK
-		matchedEffxFiles = nextRound
-
-	}
-
-	if prefixString == "" {
-		return ""
-	}
-
-	// prefix string should be a directory ending with a slash
-	slashIndex := strings.LastIndex(prefixString, "/")
-
-	if slashIndex != len(prefixString) {
-		// trim file name, keep last dir slash
-		// example:
-		// services/dooku -> services/
-		prefixString = prefixString[:slashIndex+1]
-	}
-
-	return prefixString
-}
-
 // returns a list of names of detected services
-func DetectServices(sourceName string, effxFileLocations []string) []effx_api.DetectedServicesPayload {
+
+func DetectServicesFromEffxYamls(effxFiles []data.EffxYaml, apiKeyString, sourceName string) []effx_api.DetectedServicesPayload {
+	effxFileLocations := filePathsFromEffxYaml(effxFiles)
 	detectedServices := []effx_api.DetectedServicesPayload{}
 
 	commonDir := findCommonDirectory(effxFileLocations)
@@ -100,36 +98,11 @@ func DetectServices(sourceName string, effxFileLocations []string) []effx_api.De
 	for _, file := range files {
 		// looking at directories only for service locations
 		if file.IsDir() {
-			contains := false
-			for _, effxFileLocation := range effxFileLocations {
-				if strings.Contains(effxFileLocation, file.Name()) {
-					contains = true
-				}
-			}
+			contains := directoryContainsEffxYaml(file, effxFileLocations)
+
 			if !contains {
-				payload := effx_api.DetectedServicesPayload{
-					Name:       strings.ToLower(file.Name()),
-					SourceName: &sourceName,
-					Tags:       &map[string]string{},
-				}
-				if os.Getenv("DISABLE_LANGUAGE_DETECTION") != "true" {
-					result, err := metadata.InferMetadata(filepath.Dir(commonDir + file.Name()))
-					if err != nil {
-						log.Printf("Could not predict version %+v\n", err)
-					}
+				payload := createDetectedServicePayload(file, sourceName, commonDir)
 
-					if result != nil {
-						if result.Language != "" {
-							language := strings.ToLower(result.Language)
-							(*payload.Tags)["language"] = language
-
-							// version cannot be found if language cannot be detected
-							if result.Version != "" {
-								(*payload.Tags)[language] = strings.ToLower(result.Version)
-							}
-						}
-					}
-				}
 				detectedServices = append(detectedServices, payload)
 			}
 		}

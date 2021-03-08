@@ -5,11 +5,12 @@ import (
 	"os"
 	"testing"
 
+	"github.com/effxhq/effx-cli/data"
 	"github.com/effxhq/effx-cli/discover"
 	"github.com/stretchr/testify/require"
 )
 
-func Test_Discover_Services(t *testing.T) {
+func Test_Discover_Services_From_Yaml(t *testing.T) {
 	dir, _ := ioutil.TempDir("", "services")
 	defer os.RemoveAll(dir)
 
@@ -20,10 +21,29 @@ func Test_Discover_Services(t *testing.T) {
 	tedrynFile, _ := ioutil.TempFile(tedryn, "effx.yaml")
 	wattoFile, _ := ioutil.TempFile(dooku, "effx.yaml")
 
-	input := []string{tedrynFile.Name(), wattoFile.Name()}
+	input := []data.EffxYaml{
+		{
+			FilePath: tedrynFile.Name(),
+		}, {
+			FilePath: wattoFile.Name(),
+		},
+	}
 
-	res := discover.DetectServices("effx-cli", input)
+	res := discover.DetectServicesFromEffxYamls(input, "key", "effx-cli")
 
 	require.Len(t, res, 1)
 	require.Contains(t, res[0].Name, "watto")
+}
+
+func Test_Discover_Services(t *testing.T) {
+	dir, _ := ioutil.TempDir("", "fakedir")
+	defer os.RemoveAll(dir)
+
+	_, _ = os.Create(dir + "/package.json")
+
+	res, err := discover.DetectServicesFromRelavantFiles(dir, []data.EffxYaml{}, "effx-cli")
+
+	require.Nil(t, err)
+	require.Len(t, res, 1)
+	require.Contains(t, res[0].Name, "fakedir")
 }
