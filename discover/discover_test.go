@@ -41,7 +41,7 @@ func Test_Discover_Services(t *testing.T) {
 
 	_, _ = os.Create(dir + "/package.json")
 
-	res, err := discover.DetectServicesFromRelavantFiles(dir, []data.EffxYaml{}, "effx-cli")
+	res, err := discover.DetectServicesFromFiles(dir, []data.EffxYaml{}, "effx-cli")
 
 	require.Nil(t, err)
 	require.Len(t, res, 1)

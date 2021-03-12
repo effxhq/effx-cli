@@ -82,9 +82,10 @@ func removeDuplicateServices(input []effx_api.DetectedServicesPayload) []effx_ap
 	return result
 }
 
+// DetectServicesFromWorkDir detects services given a workdir.
 func DetectServicesFromWorkDir(workDir string, apiKeyString, sourceName string) error {
 	filePaths := parser.ProcessDirectory(workDir)
-	services, err := DetectServicesFromRelavantFiles(workDir, filePaths, sourceName)
+	services, err := DetectServicesFromFiles(workDir, filePaths, sourceName)
 	if err != nil {
 		return err
 	}
@@ -96,7 +97,7 @@ func DetectServicesFromWorkDir(workDir string, apiKeyString, sourceName string) 
 	return SendDetectedServices(apiKeyString, data.GenerateUrl(), services)
 }
 
-// returns detected service by looking at existing effx yaml patterns
+// DetectServicesFromEffxYamls returns detected service by looking at existing effx yaml patterns
 func DetectServicesFromEffxYamls(effxFiles []data.EffxYaml, apiKeyString, sourceName string) []effx_api.DetectedServicesPayload {
 	effxFileLocations := filePathsFromEffxYaml(effxFiles)
 	detectedServices := []effx_api.DetectedServicesPayload{}

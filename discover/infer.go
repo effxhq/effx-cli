@@ -27,9 +27,9 @@ var relavantFiles = []string{
 	"mix.exs",          // elixer/phoenix
 }
 
-// DetectServicesFromRelavantFiles detects services based on
+// DetectServicesFromFiles detects services based on
 // containing a service-like file (package.json etc)
-func DetectServicesFromRelavantFiles(workdir string, effxFiles []data.EffxYaml, sourceName string) ([]effx_api.DetectedServicesPayload, error) {
+func DetectServicesFromFiles(workdir string, effxFiles []data.EffxYaml, sourceName string) ([]effx_api.DetectedServicesPayload, error) {
 	detectedServices := []effx_api.DetectedServicesPayload{}
 	effxFileLocations := filePathsFromEffxYaml(effxFiles)
 

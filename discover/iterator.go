@@ -43,33 +43,33 @@ func findCommonDirectory(effxFileLocations []string) string {
 	prefixString := ""
 
 	for len(matchedEffxFiles) > 0 {
-		count := make(map[string]int)
+		charCounts := make(map[string]int)
 		for _, matchedFile := range matchedEffxFiles {
 			peek := matchedFile.Peek()
 			if peek != "" {
-				count[peek]++
+				charCounts[peek]++
 			}
 		}
 
-		maxK := ""
-		maxV := 1
-		for k, v := range count {
-			if v > maxV {
-				maxK = k
-				maxV = v
+		maxChar := ""
+		maxCharCount := 1
+		for k, v := range charCounts {
+			if v > maxCharCount {
+				maxChar = k
+				maxCharCount = v
 			}
 		}
 
-		nextRound := make([]*Iterator, 0, maxV)
+		nextRound := make([]*Iterator, 0, maxCharCount)
 		for _, matchedFile := range matchedEffxFiles {
 			// advance ptr
-			if matchedFile.Next() == maxK {
+			if matchedFile.Next() == maxChar {
 				// put into next
 				nextRound = append(nextRound, matchedFile)
 			}
 		}
 
-		prefixString += maxK
+		prefixString += maxChar
 		matchedEffxFiles = nextRound
 
 	}
