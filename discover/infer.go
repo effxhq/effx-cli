@@ -11,7 +11,7 @@ import (
 	"github.com/thoas/go-funk"
 )
 
-var serviceDirectoryNames = []string{
+var defaultInferredServiceDirectoryNames = []string{
 	"services",
 	"apps",
 }
@@ -25,6 +25,16 @@ var relavantFiles = []string{
 	"composer.json",    // larvel
 	"build.gradle",     // java spring
 	"mix.exs",          // elixer/phoenix
+}
+
+func getInferredServiceDirectoryNames() []string {
+	configuredDirNames := os.Getenv("INFERRED_SERVICE_DIRECTORY_NAMES")
+
+	if configuredDirNames != "" {
+		return strings.Split(configuredDirNames, ",")
+	}
+
+	return defaultInferredServiceDirectoryNames
 }
 
 // DetectServicesFromFiles detects services based on
@@ -41,9 +51,9 @@ func DetectServicesFromFiles(workdir string, effxFiles []data.EffxYaml, sourceNa
 				return nil
 			}
 
-			// if directory name contain "services", "apps" etc, all subdirectories
-			// are services.
-			for _, relavantName := range serviceDirectoryNames {
+			// if directory name contains for example: "services", "apps" etc,
+			// all subdirectories are services.
+			for _, relavantName := range getInferredServiceDirectoryNames() {
 				if strings.Contains(dirName, relavantName) {
 					files, err := ioutil.ReadDir(path + "/" + f.Name())
 					if err == nil {
