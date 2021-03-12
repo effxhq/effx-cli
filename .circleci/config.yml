@@ -30,7 +30,7 @@ jobs:
           paths:
             - "/go/pkg/mod"
   test:
-    resource_class: small
+    resource_class: medium
     docker:
       - image: circleci/golang:1.13.5
     parallelism: 1
