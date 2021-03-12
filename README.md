@@ -27,7 +27,7 @@ go run effx.go sync -d . -k ${EFFX_API_KEY} --disable-languauge-detection
 
 ### configure automatic service detection
 you can configure which directory names can 
-automatical detected services. For example any directories inside `services/` or `apps/` will contain detected services
+automatically detected services. For example any directories inside `services/` or `apps/` will contain detected services
 ```
 export INFERRED_SERVICE_DIRECTORY_NAMES="services,apps"
 ```
