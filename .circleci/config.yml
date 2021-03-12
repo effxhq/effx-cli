@@ -74,6 +74,7 @@ workflows:
   build-workflow:
     jobs:
       - lint
+      - test
       - upload-to-s3:
           context: effx-cli-releases
           filters:
