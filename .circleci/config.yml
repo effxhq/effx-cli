@@ -49,10 +49,6 @@ jobs:
       - run:
           name: test
           command: gotestsum --format standard-verbose
-      - save_cache:
-          key: go-mod-v4-{{ checksum "go.sum" }}
-          paths:
-            - "/go/pkg/mod"
   release:
     docker:
       - image: circleci/golang:1.15
