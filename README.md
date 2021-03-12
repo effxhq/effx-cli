@@ -25,6 +25,13 @@ go run effx.go event --title "title" --message "meassage" --service "dooku" --ta
 go run effx.go sync -d . -k ${EFFX_API_KEY} --disable-languauge-detection
 ```
 
+### configure automatic service detection
+you can configure which directory names can 
+automatical detected services. For example any directories inside `services/` or `apps/` will contain detected services
+```
+export INFERRED_SERVICE_DIRECTORY_NAMES="services,apps"
+```
+
 ### Github Actions
 
 We've created two Github Actions for making it easy to automatically lint your config and sync it to our platform:

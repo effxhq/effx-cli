@@ -11,11 +11,6 @@ import (
 	"github.com/thoas/go-funk"
 )
 
-var defaultInferredServiceDirectoryNames = []string{
-	"services",
-	"apps",
-}
-
 var relavantFiles = []string{
 	"go.mod",           // golang/gin
 	"package.json",     // nodejs
@@ -25,6 +20,11 @@ var relavantFiles = []string{
 	"composer.json",    // larvel
 	"build.gradle",     // java spring
 	"mix.exs",          // elixer/phoenix
+}
+
+var defaultInferredServiceDirectoryNames = []string{
+	"services",
+	"apps",
 }
 
 func getInferredServiceDirectoryNames() []string {
