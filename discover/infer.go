@@ -1,6 +1,7 @@
 package discover
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -44,7 +45,8 @@ func DetectServicesFromFiles(workdir string, effxFiles []data.EffxYaml, sourceNa
 	effxFileLocations := filePathsFromEffxYaml(effxFiles)
 
 	err := filepath.Walk(workdir, func(path string, f os.FileInfo, err error) error {
-		if f.IsDir() {
+		fmt.Println("daniel", workdir)
+		if f != nil && f.IsDir() {
 			dirName := f.Name()
 
 			if directoryContainsEffxYaml(f, effxFileLocations) {

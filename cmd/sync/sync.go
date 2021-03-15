@@ -53,7 +53,7 @@ var SyncCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		resources := parser.ProcessArgs(filePathString, directoryString)
 
-		err := discover.DetectServicesFromWorkDir(filePathString, apiKeyString, "effx-cli")
+		err := discover.DetectServicesFromWorkDir(directoryString, apiKeyString, "effx-cli")
 		if err != nil {
 			log.Println("Could not send detected services, err:", err)
 		}
