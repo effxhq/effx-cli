@@ -47,3 +47,16 @@ func Test_Discover_Services(t *testing.T) {
 	require.Len(t, res, 1)
 	require.Contains(t, res[0].Name, "fakedir")
 }
+
+func Test_Nested_DirectoryName(t *testing.T) {
+	dir, _ := ioutil.TempDir("", "apps")
+	defer os.RemoveAll(dir)
+
+	_, _ = ioutil.TempDir(dir, "dooku")
+
+	res, err := discover.DetectServicesFromFiles(dir, []data.EffxYaml{}, "effx-cli")
+
+	require.Nil(t, err)
+	require.Len(t, res, 1)
+	require.Contains(t, res[0].Name, "dooku")
+}

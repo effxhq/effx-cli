@@ -21,14 +21,17 @@ go run effx.go event --title "title" --message "meassage" --service "dooku" --ta
 ```
 
 ### disable automatic language and version detection
-```
+
+```bash
 go run effx.go sync -d . -k ${EFFX_API_KEY} --disable-languauge-detection
 ```
 
 ### configure automatic service detection
+
 you can configure which directory names can 
 automatically detected services. For example any directories inside `services/` or `apps/` will contain detected services
-```
+
+```bash
 export INFERRED_SERVICE_DIRECTORY_NAMES="services,apps"
 ```
 

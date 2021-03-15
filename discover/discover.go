@@ -125,6 +125,7 @@ func DetectServicesFromEffxYamls(effxFiles []data.EffxYaml, apiKeyString, source
 	return detectedServices
 }
 
+// SendDetectedServices sends detected service payloads to the effx api.
 func SendDetectedServices(apiKey string, url *url.URL, servicePayloads []effx_api.DetectedServicesPayload) error {
 	for _, payload := range servicePayloads {
 		body, _ := json.Marshal(payload)
