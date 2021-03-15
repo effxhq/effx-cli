@@ -15,6 +15,7 @@ var relavantFiles = []string{
 	"go.mod",           // golang/gin
 	"package.json",     // nodejs
 	"requirements.txt", // python/django/flask
+	"Pipfile",          // python alternative to requirements.txt
 	"pom.xml",          // java/maven
 	"gemfile",          // rails, sinatra
 	"composer.json",    // larvel
