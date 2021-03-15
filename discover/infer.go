@@ -38,9 +38,19 @@ func getInferredServiceDirectoryNames() []string {
 	return defaultInferredServiceDirectoryNames
 }
 
+func safeDirectoryString(workdir string) string {
+	slashIndex := strings.LastIndex(workdir, "/")
+
+	if slashIndex != len(workdir)-1 {
+		return workdir + "/"
+	}
+	return workdir
+}
+
 // DetectServicesFromFiles detects services based on
 // containing a service-like file (package.json etc)
 func DetectServicesFromFiles(workdir string, effxFiles []data.EffxYaml, sourceName string) ([]effx_api.DetectedServicesPayload, error) {
+	workdir = safeDirectoryString(workdir)
 	detectedServices := []effx_api.DetectedServicesPayload{}
 	effxFileLocations := filePathsFromEffxYaml(effxFiles)
 

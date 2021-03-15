@@ -147,7 +147,7 @@ func SendDetectedServices(apiKey string, url *url.URL, servicePayloads []effx_ap
 	return nil
 }
 
-// DetectServices (DEPRECATED) is an endpoint to detect services
+// Deprecated: DetectServices is an endpoint to detect services
 func DetectServices(sourceName string, effxFileLocations []string) []effx_api.DetectedServicesPayload {
 	detectedServices := []effx_api.DetectedServicesPayload{}
 
