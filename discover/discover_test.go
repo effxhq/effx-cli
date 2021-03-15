@@ -14,21 +14,21 @@ func Test_Discover_Services_From_Yaml(t *testing.T) {
 	dir, _ := ioutil.TempDir("", "services")
 	defer os.RemoveAll(dir)
 
-	dooku, _ := ioutil.TempDir(dir, "dooku")
-	tedryn, _ := ioutil.TempDir(dir, "tedryn")
+	// dooku, _ := ioutil.TempDir(dir, "dooku")
+	// tedryn, _ := ioutil.TempDir(dir, "tedryn")
 	_, _ = ioutil.TempDir(dir, "watto")
 
 	// tedrynFile, _ := ioutil.TempFile(tedryn, "effx.yaml")
 	// wattoFile, _ := ioutil.TempFile(dooku, "effx.yaml")
 
-	tedrynFile, _ := os.Create(tedryn + "effx.yaml")
-	wattoFile, _ := os.Create(dooku + "effx.yaml")
+	// tedrynFile, _ := os.Create(tedryn + "effx.yaml")
+	// wattoFile, _ := os.Create(dooku + "effx.yaml")
 
 	input := []data.EffxYaml{
 		{
-			FilePath: tedrynFile.Name(),
+			FilePath: dir + "/dooku/effx.yaml",
 		}, {
-			FilePath: wattoFile.Name(),
+			FilePath: dir + "/tedryn/effx.yaml",
 		},
 	}
 
