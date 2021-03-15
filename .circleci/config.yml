@@ -29,6 +29,26 @@ jobs:
           key: go-mod-v4-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
+  test:
+    resource_class: large
+    docker:
+      - image: circleci/golang:1.13.5
+    parallelism: 1
+    environment:
+      GOPRIVATE: github.com/effxhq
+      GONOPROXY: github.com/effxhq
+      GONOSUMDB: github.com/effxhq
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-v4-{{ checksum "go.sum" }}
+      - run:
+          name: Go mod download
+          command: go mod download
+      - run:
+          name: test
+          command: gotestsum --format standard-verbose
   release:
     docker:
       - image: circleci/golang:1.15
@@ -50,6 +70,7 @@ workflows:
   build-workflow:
     jobs:
       - lint
+      - test
       - upload-to-s3:
           context: effx-cli-releases
           filters:
