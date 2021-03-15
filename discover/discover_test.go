@@ -37,18 +37,11 @@ func Test_Nested_DirectoryName(t *testing.T) {
 }
 
 func Test_Discover_Services_From_Yaml(t *testing.T) {
-	dir, _ := ioutil.TempDir("", "services")
+	yes, _ := ioutil.TempDir("", "what")
+	dir, _ := ioutil.TempDir(yes, "services")
 	defer os.RemoveAll(dir)
 
-	// dooku, _ := ioutil.TempDir(dir, "dooku")
-	// tedryn, _ := ioutil.TempDir(dir, "tedryn")
 	_, _ = ioutil.TempDir(dir, "watto")
-
-	// tedrynFile, _ := ioutil.TempFile(tedryn, "effx.yaml")
-	// wattoFile, _ := ioutil.TempFile(dooku, "effx.yaml")
-
-	// tedrynFile, _ := os.Create(tedryn + "effx.yaml")
-	// wattoFile, _ := os.Create(dooku + "effx.yaml")
 
 	input := []data.EffxYaml{
 		{
