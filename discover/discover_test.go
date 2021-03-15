@@ -10,30 +10,30 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func Test_Discover_Services_From_Yaml(t *testing.T) {
-	dir, _ := ioutil.TempDir("", "services")
-	defer os.RemoveAll(dir)
+// func Test_Discover_Services_From_Yaml(t *testing.T) {
+// 	dir, _ := ioutil.TempDir("", "services")
+// 	defer os.RemoveAll(dir)
 
-	dooku, _ := ioutil.TempDir(dir, "dooku")
-	tedryn, _ := ioutil.TempDir(dir, "tedryn")
-	_, _ = ioutil.TempDir(dir, "watto")
+// 	dooku, _ := ioutil.TempDir(dir, "dooku")
+// 	tedryn, _ := ioutil.TempDir(dir, "tedryn")
+// 	_, _ = ioutil.TempDir(dir, "watto")
 
-	tedrynFile, _ := ioutil.TempFile(tedryn, "effx.yaml")
-	wattoFile, _ := ioutil.TempFile(dooku, "effx.yaml")
+// 	tedrynFile, _ := ioutil.TempFile(tedryn, "effx.yaml")
+// 	wattoFile, _ := ioutil.TempFile(dooku, "effx.yaml")
 
-	input := []data.EffxYaml{
-		{
-			FilePath: tedrynFile.Name(),
-		}, {
-			FilePath: wattoFile.Name(),
-		},
-	}
+// 	input := []data.EffxYaml{
+// 		{
+// 			FilePath: tedrynFile.Name(),
+// 		}, {
+// 			FilePath: wattoFile.Name(),
+// 		},
+// 	}
 
-	res := discover.DetectServicesFromEffxYamls(input, "key", "effx-cli")
+// 	res := discover.DetectServicesFromEffxYamls(input, "key", "effx-cli")
 
-	require.Len(t, res, 1)
-	require.Contains(t, res[0].Name, "watto")
-}
+// 	require.Len(t, res, 1)
+// 	require.Contains(t, res[0].Name, "watto")
+// }
 
 func Test_Discover_Services(t *testing.T) {
 	dir, _ := ioutil.TempDir("", "fakedir")
