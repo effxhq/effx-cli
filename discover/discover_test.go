@@ -1,7 +1,6 @@
 package discover_test
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -24,10 +23,10 @@ func Test_Discover_Services(t *testing.T) {
 }
 
 func Test_Nested_DirectoryName(t *testing.T) {
-	dir, _ := ioutil.TempDir("", "apps")
+	dir := "apps"
+	_ = os.Mkdir(dir, 0755)
+	_ = os.Mkdir(dir+"/dooku", 0755)
 	defer os.RemoveAll(dir)
-
-	_, _ = ioutil.TempDir(dir, "dooku")
 
 	res, err := discover.DetectServicesFromFiles(dir, []data.EffxYaml{}, "effx-cli")
 
