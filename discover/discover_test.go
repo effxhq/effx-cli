@@ -41,6 +41,8 @@ func Test_Discover_Services_From_Yaml(t *testing.T) {
 	_ = os.Mkdir(dir, 0755)
 	_ = os.Mkdir(dir+"/watto", 0755)
 
+	defer os.RemoveAll(dir)
+
 	input := []data.EffxYaml{
 		{
 			FilePath: dir + "/dooku/effx.yaml",
