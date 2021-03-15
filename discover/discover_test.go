@@ -37,11 +37,9 @@ func Test_Nested_DirectoryName(t *testing.T) {
 }
 
 func Test_Discover_Services_From_Yaml(t *testing.T) {
-	yes, _ := ioutil.TempDir("", "what")
-	dir, _ := ioutil.TempDir(yes, "services")
-	defer os.RemoveAll(dir)
-
-	_, _ = ioutil.TempDir(dir, "watto")
+	dir := "test"
+	_ = os.Mkdir(dir, 0755)
+	_ = os.Mkdir(dir+"/watto", 0755)
 
 	input := []data.EffxYaml{
 		{
