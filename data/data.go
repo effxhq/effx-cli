@@ -26,9 +26,40 @@ const EffxYamlPattern = "(.+\\.)?effx\\.ya?ml$"
 
 var effxYamlRegex = regexp.MustCompile(EffxYamlPattern)
 
+// EffxYamlPattern is the regex pattern for yaml files
+const GitPattern = ".git"
+
 // EffxYaml provides a data structure and methods for interacting with effx yamls
 type EffxYaml struct {
 	FilePath string
+}
+
+func convertToRelativePath(absoluteDir string) (string, error) {
+	pathDir := filepath.Dir(absoluteDir)
+
+	for pathDir != "" {
+		pathDir = filepath.Clean(pathDir)
+		files, err := ioutil.ReadDir(pathDir)
+		if err != nil {
+			return "", err
+		}
+
+		for _, file := range files {
+			if !file.IsDir() {
+				if strings.Contains(file.Name(), ".git") {
+					pathDir = filepath.Base(pathDir)
+					res := strings.Split(absoluteDir, pathDir)
+					if len(res) > 0 {
+						return pathDir + res[1], nil
+					}
+				}
+			}
+		}
+
+		pathDir = filepath.Join(pathDir, "..")
+	}
+
+	return absoluteDir, nil
 }
 
 func setMetadata(config *effx_api.ConfigurationFile, m *metadata.Result) *effx_api.ConfigurationFile {
@@ -74,15 +105,21 @@ func (y EffxYaml) isEffxYaml() bool {
 
 func (y EffxYaml) newConfig() (*effx_api.ConfigurationFile, error) {
 	config := &effx_api.ConfigurationFile{}
+
 	yamlFile, err := ioutil.ReadFile(y.FilePath)
 	if err != nil {
 		return nil, err
 	}
 
+	relativePath, err := convertToRelativePath(y.FilePath)
+	if err != nil {
+		relativePath = y.FilePath
+	}
+
 	config.FileContents = string(yamlFile)
 	config.SetAnnotations(map[string]string{
 		"effx.io/source":    "effx-cli",
-		"effx.io/file-path": y.FilePath,
+		"effx.io/file-path": relativePath,
 	})
 
 	if os.Getenv("DISABLE_LANGUAGE_DETECTION") != "true" {
