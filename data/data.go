@@ -26,20 +26,32 @@ const EffxYamlPattern = "(.+\\.)?effx\\.ya?ml$"
 
 var effxYamlRegex = regexp.MustCompile(EffxYamlPattern)
 
-// EffxYamlPattern is the regex pattern for yaml files
-const GitPattern = ".git"
-
 // EffxYaml provides a data structure and methods for interacting with effx yamls
 type EffxYaml struct {
 	FilePath string
 }
 
-func convertToRelativePath(absoluteDir string) (string, error) {
+// given a absolute path (example: /runner/folder/root/effx.yaml)
+// and given a workingDir (example: root)
+// it will return root/effx.yaml
+func parseRelativePathFromAbsolutePath(absoluteDir, workingDir string) string {
+	res := strings.Split(absoluteDir, workingDir)
+	if len(res) > 1 {
+		contentPath := res[1]
+		return workingDir + contentPath
+	}
+	return absoluteDir
+}
+
+// given an absolute path, this function will find the root directory
+// (directory with a .git file)
+func findGitRootDirectory(absoluteDir string) (string, error) {
 	pathDir := filepath.Dir(absoluteDir)
 
 	for pathDir != "" {
 		pathDir = filepath.Clean(pathDir)
 		files, err := ioutil.ReadDir(pathDir)
+
 		if err != nil {
 			return "", err
 		}
@@ -47,11 +59,7 @@ func convertToRelativePath(absoluteDir string) (string, error) {
 		for _, file := range files {
 			if !file.IsDir() {
 				if strings.Contains(file.Name(), ".git") {
-					pathDir = filepath.Base(pathDir)
-					res := strings.Split(absoluteDir, pathDir)
-					if len(res) > 0 {
-						return pathDir + res[1], nil
-					}
+					return filepath.Base(pathDir), nil
 				}
 			}
 		}
@@ -60,6 +68,31 @@ func convertToRelativePath(absoluteDir string) (string, error) {
 	}
 
 	return absoluteDir, nil
+}
+
+// converts /runner/sandbox/root/effx.yaml
+// to root/effx.yaml for a more helpful file source.
+// it will try to get working directory from circleci,
+// if cannot find it, it will attempt to find the root directory
+// where git files are present.
+func convertToRelativePath(absoluteDir string) (string, error) {
+	var (
+		workDir = os.Getenv("CIRCLE_WORKING_DIRECTORY")
+		err     error
+	)
+
+	if workDir == "" {
+		absoluteDir, err = filepath.Abs(absoluteDir)
+		if err != nil {
+			return absoluteDir, err
+		}
+		workDir, err = findGitRootDirectory(absoluteDir)
+		if err != nil {
+			return absoluteDir, err
+		}
+	}
+
+	return parseRelativePathFromAbsolutePath(absoluteDir, workDir), nil
 }
 
 func setMetadata(config *effx_api.ConfigurationFile, m *metadata.Result) *effx_api.ConfigurationFile {
@@ -115,6 +148,8 @@ func (y EffxYaml) newConfig() (*effx_api.ConfigurationFile, error) {
 	if err != nil {
 		relativePath = y.FilePath
 	}
+
+	fmt.Println("testing", relativePath)
 
 	config.FileContents = string(yamlFile)
 	config.SetAnnotations(map[string]string{
