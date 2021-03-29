@@ -31,14 +31,18 @@ type EffxYaml struct {
 	FilePath string
 }
 
-// given a absolute path (example: /runner/folder/root/effx.yaml)
+// given a absolute path (example: /runner/folder/root/data/effx.yaml)
 // and given a workingDir (example: root)
-// it will return root/effx.yaml
+// it will return data/effx.yaml
 func parseRelativePathFromAbsolutePath(absoluteDir, workingDir string) string {
+	// if working directory does not end with a slash, add it
+	if strings.LastIndex(workingDir, "/") != len(workingDir)-1 {
+		workingDir += "/"
+	}
+
 	res := strings.Split(absoluteDir, workingDir)
 	if len(res) > 1 {
-		contentPath := res[1]
-		return workingDir + contentPath
+		return res[1]
 	}
 	return absoluteDir
 }
@@ -70,6 +74,26 @@ func findGitRootDirectory(absoluteDir string) (string, error) {
 	return absoluteDir, nil
 }
 
+func getRepoName() string {
+	circleCIRepoName := os.Getenv("CIRCLE_PROJECT_REPONAME")
+	githubRepoName := os.Getenv("GITHUB_REPOSITORY")
+	gitlabRepoName := os.Getenv("CI_PROJECT_NAME")
+
+	if circleCIRepoName != "" {
+		return circleCIRepoName
+	}
+
+	if githubRepoName != "" {
+		return githubRepoName
+	}
+
+	if gitlabRepoName != "" {
+		return gitlabRepoName
+	}
+
+	return ""
+}
+
 // converts /runner/sandbox/root/effx.yaml
 // to root/effx.yaml for a more helpful file source.
 // it will try to get working directory from circleci,
@@ -77,7 +101,7 @@ func findGitRootDirectory(absoluteDir string) (string, error) {
 // where git files are present.
 func convertToRelativePath(absoluteDir string) (string, error) {
 	var (
-		workDir = os.Getenv("CIRCLE_WORKING_DIRECTORY")
+		workDir = getRepoName()
 		err     error
 	)
 
@@ -148,8 +172,6 @@ func (y EffxYaml) newConfig() (*effx_api.ConfigurationFile, error) {
 	if err != nil {
 		relativePath = y.FilePath
 	}
-
-	fmt.Println("testing", relativePath)
 
 	config.FileContents = string(yamlFile)
 	config.SetAnnotations(map[string]string{
