@@ -75,20 +75,17 @@ func findGitRootDirectory(absoluteDir string) (string, error) {
 }
 
 func getRepoName() string {
-	circleCIRepoName := os.Getenv("CIRCLE_PROJECT_REPONAME")
-	githubRepoName := os.Getenv("GITHUB_REPOSITORY")
-	gitlabRepoName := os.Getenv("CI_PROJECT_NAME")
-
-	if circleCIRepoName != "" {
-		return circleCIRepoName
+	repoNameList := []string{
+		"CIRCLE_PROJECT_REPONAME",
+		"GITHUB_REPOSITORY",
+		"CI_PROJECT_NAME",
+		"SEMAPHORE_GIT_URL",
 	}
 
-	if githubRepoName != "" {
-		return githubRepoName
-	}
-
-	if gitlabRepoName != "" {
-		return gitlabRepoName
+	for _, envVar := range repoNameList {
+		if res := os.Getenv(envVar); res != "" {
+			return res
+		}
 	}
 
 	return ""
