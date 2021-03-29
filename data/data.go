@@ -31,6 +31,19 @@ type EffxYaml struct {
 	FilePath string
 }
 
+// converts effxhq/backeffx to backeffx
+// needed for github env var
+func parseOutOwnerName(repoName string) string {
+	if strings.Contains(repoName, "/") {
+		result := strings.Split(repoName, "/")
+		if len(result) > 1 {
+			return result[1]
+		}
+	}
+
+	return repoName
+}
+
 // given a absolute path (example: /runner/folder/root/data/effx.yaml)
 // and given a workingDir (example: root)
 // it will return data/effx.yaml
@@ -77,14 +90,14 @@ func findGitRootDirectory(absoluteDir string) (string, error) {
 func getRepoName() string {
 	repoNameList := []string{
 		"CIRCLE_PROJECT_REPONAME",
-		"GITHUB_REPOSITORY",
 		"CI_PROJECT_NAME",
-		"SEMAPHORE_GIT_URL",
+		"SEMAPHORE_PROJECT_NAME",
+		"GITHUB_REPOSITORY",
 	}
 
 	for _, envVar := range repoNameList {
 		if res := os.Getenv(envVar); res != "" {
-			return res
+			return parseOutOwnerName(res)
 		}
 	}
 
@@ -117,11 +130,15 @@ func convertToRelativePath(absoluteDir string) (string, error) {
 }
 
 func setMetadata(config *effx_api.ConfigurationFile, m *metadata.Result) *effx_api.ConfigurationFile {
+	var (
+		inferredTags = []string{}
+		repoName     = getRepoName()
+	)
+
 	if m == nil {
 		return config
 	}
 
-	var inferredTags []string
 	tags, ok := config.GetTagsOk()
 	if !ok {
 		tags = &map[string]string{}
@@ -145,6 +162,10 @@ func setMetadata(config *effx_api.ConfigurationFile, m *metadata.Result) *effx_a
 	}
 
 	(*annotations)["effx.io/inferred-tags"] = strings.Join(inferredTags, ",")
+
+	if repoName != "" {
+		(*annotations)["effx.io/repo-name"] = repoName
+	}
 
 	config.SetTags(*tags)
 	config.SetAnnotations(*annotations)
