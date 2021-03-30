@@ -132,7 +132,6 @@ func convertToRelativePath(absoluteDir string) (string, error) {
 func setMetadata(config *effx_api.ConfigurationFile, m *metadata.Result) *effx_api.ConfigurationFile {
 	var (
 		inferredTags = []string{}
-		repoName     = getRepoName()
 	)
 
 	if m == nil {
@@ -163,7 +162,7 @@ func setMetadata(config *effx_api.ConfigurationFile, m *metadata.Result) *effx_a
 
 	(*annotations)["effx.io/inferred-tags"] = strings.Join(inferredTags, ",")
 
-	if repoName != "" {
+	if repoName := getRepoName(); repoName != "" {
 		(*annotations)["effx.io/repo-name"] = repoName
 	}
 
@@ -193,8 +192,9 @@ func (y EffxYaml) newConfig() (*effx_api.ConfigurationFile, error) {
 
 	config.FileContents = string(yamlFile)
 	config.SetAnnotations(map[string]string{
-		"effx.io/source":    "effx-cli",
-		"effx.io/file-path": relativePath,
+		"effx.io/source":               "effx-cli",
+		"effx.io/file-path":            relativePath,
+		"effx.io/version-control-link": getVersionControlLink(relativePath),
 	})
 
 	if os.Getenv("DISABLE_LANGUAGE_DETECTION") != "true" {
