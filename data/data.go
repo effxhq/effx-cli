@@ -163,7 +163,7 @@ func setMetadata(config *effx_api.ConfigurationFile, m *metadata.Result) *effx_a
 	(*annotations)["effx.io/inferred-tags"] = strings.Join(inferredTags, ",")
 
 	if repoName := getRepoName(); repoName != "" {
-		(*annotations)["effx.io/repo-name"] = repoName
+		(*annotations)["effx.io/repository-name"] = repoName
 	}
 
 	config.SetTags(*tags)
