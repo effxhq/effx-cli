@@ -104,6 +104,9 @@ func ProcessEvent(e *EventPayload) *data.EffxEvent {
 			ServiceName: &e.ServiceName,
 			Tags:        &tagsPayload,
 			Actions:     &actions,
+			Integration: &effx_api.CreateEventPayloadIntegration{
+				Name: data.GetIntegrationName(),
+			},
 		},
 	}
 

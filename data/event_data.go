@@ -5,12 +5,31 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 
 	effx_api "github.com/effxhq/effx-api-v2-go/client"
 )
 
 type EffxEvent struct {
 	Payload *effx_api.CreateEventPayload
+}
+
+// GetIntegrationName uses the environment to generate an effx integration name
+func GetIntegrationName() string {
+	integrations := map[string]string{
+		"gitlab":         "GITLAB_CI",
+		"github_actions": "GITHUB_ACTIONS",
+		"circleci":       "CIRCLECI",
+		"semaphore":      "SEMAPHORE",
+	}
+
+	for integration, envVariable := range integrations {
+		if os.Getenv(envVariable) != "" {
+			return integration
+		}
+	}
+
+	return ""
 }
 
 // Sync Updates the Effx API with yaml file contents
