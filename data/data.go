@@ -87,23 +87,6 @@ func findGitRootDirectory(absoluteDir string) (string, error) {
 	return absoluteDir, nil
 }
 
-func getRepoName() string {
-	repoNameList := []string{
-		"CIRCLE_PROJECT_REPONAME",
-		"CI_PROJECT_NAME",
-		"SEMAPHORE_PROJECT_NAME",
-		"GITHUB_REPOSITORY",
-	}
-
-	for _, envVar := range repoNameList {
-		if res := os.Getenv(envVar); res != "" {
-			return parseOutOwnerName(res)
-		}
-	}
-
-	return ""
-}
-
 // converts /runner/sandbox/root/effx.yaml
 // to root/effx.yaml for a more helpful file source.
 // it will try to get working directory from circleci,
@@ -111,7 +94,7 @@ func getRepoName() string {
 // where git files are present.
 func convertToRelativePath(absoluteDir string) (string, error) {
 	var (
-		workDir = getRepoName()
+		workDir = ""
 		err     error
 	)
 
@@ -162,10 +145,6 @@ func setMetadata(config *effx_api.ConfigurationFile, m *metadata.Result) *effx_a
 
 	(*annotations)["effx.io/inferred-tags"] = strings.Join(inferredTags, ",")
 
-	if repoName := getRepoName(); repoName != "" {
-		(*annotations)["effx.io/repository-name"] = repoName
-	}
-
 	config.SetTags(*tags)
 	config.SetAnnotations(*annotations)
 
@@ -190,11 +169,14 @@ func (y EffxYaml) newConfig() (*effx_api.ConfigurationFile, error) {
 		relativePath = y.FilePath
 	}
 
+	versionControlUrl := getVersionControlLink(relativePath)
+
 	config.FileContents = string(yamlFile)
 	config.SetAnnotations(map[string]string{
 		"effx.io/source":               "effx-cli",
 		"effx.io/file-path":            relativePath,
-		"effx.io/version-control-link": getVersionControlLink(relativePath),
+		"effx.io/version-control-link": versionControlUrl,
+		"effx.io/repository-name":      getRepoName(versionControlUrl),
 	})
 
 	if os.Getenv("DISABLE_LANGUAGE_DETECTION") != "true" {

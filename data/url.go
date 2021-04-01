@@ -8,6 +8,17 @@ import (
 	"github.com/go-git/go-git/v5"
 )
 
+// parses repo name from version control url
+func getRepoName(url string) string {
+	url = strings.Replace(url, "https://", "", 1)
+	result := strings.Split(url, "/")
+	if len(result) < 2 {
+		return ""
+	}
+
+	return result[2]
+}
+
 func getVersionControlLink(relativePath string) string {
 	r, err := git.PlainOpenWithOptions(".", &git.PlainOpenOptions{DetectDotGit: true})
 	if err != nil {
