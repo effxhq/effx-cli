@@ -31,19 +31,6 @@ type EffxYaml struct {
 	FilePath string
 }
 
-// converts effxhq/backeffx to backeffx
-// needed for github env var
-func parseOutOwnerName(repoName string) string {
-	if strings.Contains(repoName, "/") {
-		result := strings.Split(repoName, "/")
-		if len(result) > 1 {
-			return result[1]
-		}
-	}
-
-	return repoName
-}
-
 // given a absolute path (example: /runner/folder/root/data/effx.yaml)
 // and given a workingDir (example: root)
 // it will return data/effx.yaml
