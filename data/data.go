@@ -31,12 +31,83 @@ type EffxYaml struct {
 	FilePath string
 }
 
+// given a absolute path (example: /runner/folder/root/data/effx.yaml)
+// and given a workingDir (example: root)
+// it will return data/effx.yaml
+func parseRelativePathFromAbsolutePath(absoluteDir, workingDir string) string {
+	// if working directory does not end with a slash, add it
+	if strings.LastIndex(workingDir, "/") != len(workingDir)-1 {
+		workingDir += "/"
+	}
+
+	res := strings.Split(absoluteDir, workingDir)
+	if len(res) > 1 {
+		return res[1]
+	}
+	return absoluteDir
+}
+
+// given an absolute path, this function will find the root directory
+// (directory with a .git file)
+func findGitRootDirectory(absoluteDir string) (string, error) {
+	pathDir := filepath.Dir(absoluteDir)
+
+	for pathDir != "" {
+		pathDir = filepath.Clean(pathDir)
+		files, err := ioutil.ReadDir(pathDir)
+
+		if err != nil {
+			return "", err
+		}
+
+		for _, file := range files {
+			if !file.IsDir() {
+				if strings.Contains(file.Name(), ".git") {
+					return filepath.Base(pathDir), nil
+				}
+			}
+		}
+
+		pathDir = filepath.Join(pathDir, "..")
+	}
+
+	return absoluteDir, nil
+}
+
+// converts /runner/sandbox/root/effx.yaml
+// to root/effx.yaml for a more helpful file source.
+// it will try to get working directory from circleci,
+// if cannot find it, it will attempt to find the root directory
+// where git files are present.
+func convertToRelativePath(absoluteDir string) (string, error) {
+	var (
+		workDir = ""
+		err     error
+	)
+
+	if workDir == "" {
+		absoluteDir, err = filepath.Abs(absoluteDir)
+		if err != nil {
+			return absoluteDir, err
+		}
+		workDir, err = findGitRootDirectory(absoluteDir)
+		if err != nil {
+			return absoluteDir, err
+		}
+	}
+
+	return parseRelativePathFromAbsolutePath(absoluteDir, workDir), nil
+}
+
 func setMetadata(config *effx_api.ConfigurationFile, m *metadata.Result) *effx_api.ConfigurationFile {
+	var (
+		inferredTags = []string{}
+	)
+
 	if m == nil {
 		return config
 	}
 
-	var inferredTags []string
 	tags, ok := config.GetTagsOk()
 	if !ok {
 		tags = &map[string]string{}
@@ -74,15 +145,25 @@ func (y EffxYaml) isEffxYaml() bool {
 
 func (y EffxYaml) newConfig() (*effx_api.ConfigurationFile, error) {
 	config := &effx_api.ConfigurationFile{}
+
 	yamlFile, err := ioutil.ReadFile(y.FilePath)
 	if err != nil {
 		return nil, err
 	}
 
+	relativePath, err := convertToRelativePath(y.FilePath)
+	if err != nil {
+		relativePath = y.FilePath
+	}
+
+	versionControlUrl := getVersionControlLink(relativePath)
+
 	config.FileContents = string(yamlFile)
 	config.SetAnnotations(map[string]string{
-		"effx.io/source":    "effx-cli",
-		"effx.io/file-path": y.FilePath,
+		"effx.io/source":               "effx-cli",
+		"effx.io/file-path":            relativePath,
+		"effx.io/version-control-link": versionControlUrl,
+		"effx.io/repository-name":      getRepoName(versionControlUrl),
 	})
 
 	if os.Getenv("DISABLE_LANGUAGE_DETECTION") != "true" {
