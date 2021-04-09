@@ -19,8 +19,8 @@ func getRepoName(url string) string {
 	return result[2]
 }
 
-func getVersionControlLink(relativePath string) string {
-	r, err := git.PlainOpenWithOptions(".", &git.PlainOpenOptions{DetectDotGit: true})
+func getVersionControlLink(absolutePath, relativePath string) string {
+	r, err := git.PlainOpenWithOptions(absolutePath, &git.PlainOpenOptions{DetectDotGit: true})
 	if err != nil {
 		return ""
 	}

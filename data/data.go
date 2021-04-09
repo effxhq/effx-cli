@@ -156,7 +156,7 @@ func (y EffxYaml) newConfig() (*effx_api.ConfigurationFile, error) {
 		relativePath = y.FilePath
 	}
 
-	versionControlUrl := getVersionControlLink(relativePath)
+	versionControlUrl := getVersionControlLink(y.FilePath, relativePath)
 
 	config.FileContents = string(yamlFile)
 	config.SetAnnotations(map[string]string{
