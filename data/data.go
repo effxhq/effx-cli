@@ -222,13 +222,14 @@ func (y EffxYaml) Sync(apiKey string) error {
 	request.Header.Add("content-type", "application/json")
 	request.Header.Add("x-effx-api-key", apiKey)
 
-	resp, err := http.DefaultClient.Do(request)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
+	// resp, err := http.DefaultClient.Do(request)
+	// if err != nil {
+	// 	return err
+	// }
+	// defer resp.Body.Close()
 
-	return checkForErrors(resp)
+	// return checkForErrors(resp)
+	return nil
 }
 
 func getEnv(key, fallback string) string {

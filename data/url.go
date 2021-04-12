@@ -20,6 +20,11 @@ func getRepoName(url string) string {
 }
 
 func getVersionControlLink(absolutePath, relativePath string) string {
+	if strings.Contains(absolutePath, "interstellar") {
+		fmt.Println("testing absolute path", absolutePath)
+		fmt.Println("testing relative path", relativePath)
+	}
+
 	r, err := git.PlainOpenWithOptions(absolutePath, &git.PlainOpenOptions{DetectDotGit: true})
 	if err != nil {
 		return ""
@@ -44,6 +49,12 @@ func getVersionControlLink(absolutePath, relativePath string) string {
 				gitUrl, err := parseUrl(url)
 				if err != nil {
 					return ""
+				}
+
+				a := includePathToFile(gitUrl, currentBranch, relativePath)
+
+				if strings.Contains(absolutePath, "interstellar") {
+					fmt.Println("a", a)
 				}
 
 				return includePathToFile(gitUrl, currentBranch, relativePath)
